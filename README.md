@@ -1,11 +1,9 @@
-<h1 style="text-align:center">BeastyButtons Project</h1>
-
-<p style="text-align:center;"><img src="BeastyButtons Logo.svg"></p>
-
----
-<h6 style="text-align:center;">developed by Pico Lütjens</h6>
+## BeastyButtons Project
+###### developed by Pico Lütjens
 
 ---
+
+![Logo](Beastybuttons%20Logo.svg)
 
 ## Description
 
@@ -16,7 +14,7 @@ You can get References to a Widget by either its ID or its SOURCEPATH - also at 
 Furthermore you can set Widgets active/unactive and visible/invisible. Other supported Features are a Tooltip System and also changing shape and color of widgets. At Creation of Widgets many values are automatically calculated to make the usage a whole lot easier. If you don't want that you can of course overwrite the values afterwords.
 
 ---
-## Usage:
+## Install:
 Clone or download the repository and from here and go to your Processing lib folder and paste it there. 
 
 Or install it directly via the Processing Lybrary Manager - currently not supported.
@@ -25,3 +23,5 @@ Or install it directly via the Processing Lybrary Manager - currently not suppor
 
 ## Warning: 
 Currently only Java Mode is supported. Testing was done on Windows. Therefore it is not guaranteed to work fully on other Systems. 
+
+>The Documentation is available [here](https://Beastybuttonsdoc.com)
