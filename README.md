@@ -24,4 +24,4 @@ Or install it directly via the Processing Lybrary Manager - currently not suppor
 ## Warning: 
 Currently only Java Mode is supported. Testing was done on Windows. Therefore it is not guaranteed to work fully on other Systems. 
 
->The Documentation is available [here](https://Beastybuttonsdoc.com)
+>The Documentation is available on the [BeastyButtons Website](https://plhoster.github.io/BeastyButtons/)
