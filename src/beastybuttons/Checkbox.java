@@ -6,7 +6,7 @@ public class Checkbox extends Widget
 {
 	//******VARIABLES******
 	
-	private enum Checktype{
+	protected enum Checktype{
 		CHECK,
 		CROSS,
 		POINT,
@@ -17,7 +17,7 @@ public class Checkbox extends Widget
 	protected static int INSTANCES = 0;
 	
 	//the defined checktype
-	private Checktype CHECKTYPE = Checktype.CHECK;
+	protected Checktype CHECKTYPE = Checktype.CHECK;
 	
 	//PApplet ref
 	private final PApplet REF;
@@ -29,7 +29,7 @@ public class Checkbox extends Widget
 	protected boolean round;
 		
 	//hotkey combination
-	protected int hotkey;
+	protected int hotkey = -1;
 	
 	//methods on check(on check, on uncheck)
   	protected String oc, ou;

@@ -17,6 +17,8 @@ public class BB_Image extends Widget
 	//image ref
 	protected PImage IMG;
 	
+	protected String imgpath = "none";
+	
 	//saved crops for exporting
 	ArrayList<Crop> crops = new ArrayList<>();
 	
@@ -26,6 +28,7 @@ public class BB_Image extends Widget
 	public BB_Image(PApplet ref, String imgpath) {
 		this.REF = ref;
 		this.IMG = this.REF.loadImage(imgpath);
+		this.imgpath = imgpath;
 		this.sizes[0] = this.IMG.width;
 		this.sizes[1] = this.IMG.height;
 		this.generateColors();

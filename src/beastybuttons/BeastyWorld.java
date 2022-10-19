@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 
+import beastybuttons.Checkbox.Checktype;
 import processing.core.*;
 import processing.data.XML;
 import processing.event.KeyEvent;
@@ -39,7 +40,7 @@ public class BeastyWorld
 	
 	private String iconpath = "default";
 	
-	private String windowtitle = "defaut";
+	private String windowtitle = "default";
 	
 	//operating system
 	private String operating_system = "none";
@@ -68,7 +69,7 @@ public class BeastyWorld
 	private ArrayList<String> loglist = new ArrayList<>();
 	
 	
-	private String logfilepath = null, rel_path;
+	private String logfilepath = null, rel_path = "none";
 	
 	//handlers for interaction
 	protected static boolean[] HANDLERS = {false, false, false};
@@ -283,16 +284,18 @@ public class BeastyWorld
 	*/
 	
 	//the background that is drawn at the end of Processing IDEs draw and before drawing BB Graphics
-	public void setBackgroundColor(int c) {
+	public BeastyWorld setBackgroundColor(int c) {
 		this.BACKGROUNDCOLOR = c;
+		return this;
 	}
 	
 	//use this to disable background update by BB.
 	//disadvantage -> background has to be called from inside processing IDE in draw() now, otherwise no screen update
 	//advantage -> you can draw own elements to the screen without being overdrawn by BB, adding to the BB GUI and animating with the GUI etc.
 	//the registermethod("pre", this) is not used to give more freedom to the user
-	public void disableBackground(boolean disable) {
+	public BeastyWorld disableBackground(boolean disable) {
 		this.disable_background = disable;
+		return this;
 	}
 	
 	
@@ -520,8 +523,6 @@ public class BeastyWorld
 		}
 		
 		*/
-		@NotImplementedYet
-		@Experimental
 		public Widget get_widget_by_id(String id){
 			for(Widget w : this.widgets) {
 				if(w.ID.equals(id)) {
@@ -743,34 +744,24 @@ public class BeastyWorld
 	
 	//******IMPORT - EXPORT METHODS******
 	
-	//exports a .beasty file stored in JSON format
-	@NotImplementedYet
+	//exports a .beasty file stored in XML format
 	@Experimental
 	public void exportLayout(String path) {
 		try {
 				XML exportxml = new XML("BeastyWorld");
-				String op_system_exp = this.operating_system;
+				
 				String bbversion_exp = Info.version();
 				String processingversion_exp = "unknown";
 				
 				XML system_exp_tag = exportxml.addChild("System");
-				XML type_exp_tag = system_exp_tag.addChild("type");
-				type_exp_tag.setContent(op_system_exp);
-				XML bbversion_exp_tag = system_exp_tag.addChild("bbversion");
-				bbversion_exp_tag.setContent(bbversion_exp);
-				XML processingversion_exp_tag = system_exp_tag.addChild("processingversion");
-				processingversion_exp_tag.setContent(processingversion_exp);
+				system_exp_tag.addChild("type").setContent(this.operating_system);
+				system_exp_tag.addChild("bbversion").setContent(bbversion_exp);
+				system_exp_tag.addChild("processingversion").setContent(processingversion_exp);
 				
-				String resx = Float.toString(this.REF.width);
-				String resy = Float.toString(this.REF.height);
 				XML sketch_exp_tag = exportxml.addChild("Sketch");
-				XML exportresx_exp_tag = sketch_exp_tag.addChild("exportresx");
-				exportresx_exp_tag.setContent(resx);
-				XML exportresy_exp_tag = sketch_exp_tag.addChild("exportresy");
-				exportresy_exp_tag.setContent(resy);
+				sketch_exp_tag.addChild("exportresx").setContent(Float.toString(this.REF.width));
+				sketch_exp_tag.addChild("exportresy").setContent(Float.toString(this.REF.height));
 				
-				String id_exp = this.ID;
-				String sourcepath_exp = this.SOURCEPATH;
 				String widgetmode_exp = "widget";
 				if(this.MODE == WidgetMode.WIDGET) {
 					widgetmode_exp = "widget";
@@ -778,7 +769,6 @@ public class BeastyWorld
 				else if(this.MODE == WidgetMode.SURFACE) {
 					widgetmode_exp = "surface";
 				}
-				String renderpage_exp = this.renderpage.ID;
 				String logging_exp = "false";
 				if(this.logging) {
 					logging_exp = "true";
@@ -786,8 +776,7 @@ public class BeastyWorld
 				else {
 					logging_exp = "false";
 				}
-				String loglevel_exp = Integer.toString(this.loglevel);
-				String rellogpath_exp = this.rel_path;
+				
 				String handlers_exp = "true,false,false", h1 = "true", h2 = "false", h3 = "false";
 				if(BeastyWorld.HANDLERS[0]) {
 					h1 = "true";
@@ -815,39 +804,970 @@ public class BeastyWorld
 				else {
 					backgrounddisable_exp = "false";
 				}
-				String backgroundcolor_exp = Integer.toString(this.BACKGROUNDCOLOR);
-				String windowtitle_exp = this.windowtitle;
-				String iconpath_exp = this.iconpath;
+				
+				
 				XML settings_exp_tag = exportxml.addChild("Settings");
-				XML id_exp_tag = settings_exp_tag.addChild("id");
-				id_exp_tag.setContent(id_exp);
-				XML sourcepath_exp_tag = settings_exp_tag.addChild("sourcepath");
-				sourcepath_exp_tag.setContent(sourcepath_exp);
-				XML widgetmode_exp_tag = settings_exp_tag.addChild("widgetmode");
-				widgetmode_exp_tag.setContent(widgetmode_exp);
-				XML renderpage_exp_tag = settings_exp_tag.addChild("renderpage");
-				renderpage_exp_tag.setContent(renderpage_exp);
-				XML logging_exp_tag = settings_exp_tag.addChild("logging");
-				logging_exp_tag.setContent(logging_exp);
-				XML loglevel_exp_tag = settings_exp_tag.addChild("loglevel");
-				loglevel_exp_tag.setContent(loglevel_exp);
-				XML rellogpath_exp_tag = settings_exp_tag.addChild("rellogpath");
-				rellogpath_exp_tag.setContent(rellogpath_exp);
-				XML handlers_exp_tag = settings_exp_tag.addChild("handlers");
-				handlers_exp_tag.setContent(handlers_exp);
-				XML backgrounddisable_exp_tag = settings_exp_tag.addChild("backgrounddisable");
-				backgrounddisable_exp_tag.setContent(backgrounddisable_exp);
-				XML backgroundcolor_exp_tag = settings_exp_tag.addChild("backgroundcolor");
-				backgroundcolor_exp_tag.setContent(backgroundcolor_exp);
-				XML windowtitle_exp_tag = settings_exp_tag.addChild("windowtitle");
-				windowtitle_exp_tag.setContent(windowtitle_exp);
+				settings_exp_tag.addChild("id").setContent(this.ID);
+				settings_exp_tag.addChild("sourcepath").setContent(this.SOURCEPATH);
+				settings_exp_tag.addChild("widgetmode").setContent(widgetmode_exp);
+				settings_exp_tag.addChild("renderpage").setContent(this.renderpage.ID);
+				settings_exp_tag.addChild("logging").setContent(logging_exp);
+				settings_exp_tag.addChild("loglevel").setContent(Integer.toString(this.loglevel));
+				settings_exp_tag.addChild("rellogpath").setContent(this.rel_path);
+				settings_exp_tag.addChild("handlers").setContent(handlers_exp);
+				settings_exp_tag.addChild("backgrounddisable").setContent(backgrounddisable_exp);
+				settings_exp_tag.addChild("backgroundcolor").setContent(Integer.toString(this.BACKGROUNDCOLOR));
+				settings_exp_tag.addChild("windowtitle").setContent(this.windowtitle);
 				XML depedencies_exp_tag = settings_exp_tag.addChild("dependencies");
-				XML iconpath_exp_tag = depedencies_exp_tag.addChild("iconpath");
-				iconpath_exp_tag.setContent(iconpath_exp);
+				depedencies_exp_tag.addChild("iconpath").setContent(this.iconpath);
 			
 				
 				//layout from here
+				XML layout_exp_tag = exportxml.addChild("Layout");
 				
+				if(this.MODE == WidgetMode.WIDGET) {
+					for(Widget w : this.widgets) {
+						XML widget_exp_tag = layout_exp_tag.addChild("Widget");
+						if(w instanceof Button) {
+							widget_exp_tag.setString("type", "Button");
+							Button bu = (Button)w;
+							widget_exp_tag.addChild("id").setContent(bu.ID);
+							widget_exp_tag.addChild("sourcepath").setContent(bu.SOURCEPATH);
+							widget_exp_tag.addChild("xpos").setContent(Float.toString(bu.positions[0]));
+							widget_exp_tag.addChild("ypos").setContent(Float.toString(bu.positions[1]));
+							widget_exp_tag.addChild("xsize").setContent(Float.toString(bu.sizes[0]));
+							widget_exp_tag.addChild("ysize").setContent(Float.toString(bu.sizes[1]));
+							String round = "false";
+							if(bu.round) {
+								round = "true";
+							}
+							else {
+								round = "false";
+							}
+							widget_exp_tag.addChild("round").setContent(round);
+							widget_exp_tag.addChild("text").setContent(bu.text);
+							widget_exp_tag.addChild("textsize").setContent(Float.toString(bu.textSize));
+							String hotkey = "-1";
+							if(bu.hotkey > -1) {
+								hotkey = Integer.toString(bu.hotkey);
+							}
+							else {
+								hotkey = "-1";
+							}
+							widget_exp_tag.addChild("hotkey").setContent(hotkey);
+							widget_exp_tag.addChild("textoffsetx").setContent(Float.toString(bu.textoffset[0]));
+							widget_exp_tag.addChild("textoffsety").setContent(Float.toString(bu.textoffset[1]));
+							widget_exp_tag.addChild("backgroundcolor").setContent(Integer.toString(bu.background));
+							widget_exp_tag.addChild("foregroundcolor").setContent(Integer.toString(bu.foreground));
+							widget_exp_tag.addChild("overcolor").setContent(Integer.toString(bu.overcolor));
+							widget_exp_tag.addChild("clickcolor").setContent(Integer.toString(bu.clickcolor));
+							String active = "true";
+							if(bu.active) {
+								active = "true";
+							}
+							else {
+								active = "false";
+							}
+							widget_exp_tag.addChild("active").setContent(active);
+							String visible = "true";
+							if(bu.visible) {
+								visible = "true";
+							}
+							else {
+								visible = "false";
+							}
+							widget_exp_tag.addChild("visible").setContent(visible);
+							widget_exp_tag.addChild("layer").setContent(Integer.toString(bu.LAYER));
+							XML tooltip = widget_exp_tag.addChild("tooltip");
+							String tttext = "none";
+							if(bu.tooltiptext != null) {
+								tttext = bu.tooltiptext;
+							}
+							else {
+								tttext = "none";
+							}
+							tooltip.addChild("tttext").setContent(tttext);
+							String tttextsize = "none";
+							if(bu.tooltiptextsize > -1) {
+								tttextsize = Float.toString(bu.tooltiptextsize);
+							}
+							else {
+								tttextsize = "none";
+							}
+							tooltip.addChild("tttextsize").setContent(tttextsize);
+							tooltip.addChild("ttposx").setContent(Float.toString(bu.ttpositions[0]));
+							tooltip.addChild("ttposy").setContent(Float.toString(bu.ttpositions[1]));
+							tooltip.addChild("ttsizex").setContent(Float.toString(bu.ttsizes[0]));
+							tooltip.addChild("ttsizey").setContent(Float.toString(bu.ttsizes[1]));
+							tooltip.addChild("ttforeground").setContent(Integer.toString(bu.ttforeground));
+							tooltip.addChild("ttbackground").setContent(Integer.toString(bu.ttbackground));
+							String roundtt = "false";
+							if(bu.roundtt) {
+								roundtt = "true";
+							}
+							else {
+								roundtt = "false";
+							}
+							tooltip.addChild("roundtt").setContent(roundtt);
+							tooltip.addChild("intervall").setContent(Float.toString(bu.intervall));
+							tooltip.addChild("tttextoffsetx").setContent(Float.toString(bu.tttextoffset[0]));
+							tooltip.addChild("tttextoffsety").setContent(Float.toString(bu.tttextoffset[1]));
+							String enabled = "false";
+							if(bu.tooltip_enabled) {
+								enabled = "true";
+							}
+							else {
+								enabled = "false";
+							}
+							tooltip.addChild("enabled").setContent(enabled);
+							XML dependencies = widget_exp_tag.addChild("dependencies");
+							String olc = "none", omc = "none", orc = "none";
+							if(bu.olc != null) {
+								olc = bu.olc;
+							}
+							else {
+								olc = "none";
+							}
+							if(bu.omc != null) {
+								omc = bu.omc;
+							}
+							else {
+								omc = "none";
+							}
+							if(bu.orc != null) {
+								orc = bu.orc;
+							}
+							else {
+								orc = "none";
+							}
+							dependencies.addChild("onleftclick").setContent(olc);
+							dependencies.addChild("onmiddleclick").setContent(omc);
+							dependencies.addChild("onrightclick").setContent(orc);
+						}
+						else if(w instanceof Checkbox) {
+							widget_exp_tag.setString("type", "Checkbox");
+							Checkbox c = (Checkbox)w;
+							widget_exp_tag.addChild("id").setContent(c.ID);
+							widget_exp_tag.addChild("sourcepath").setContent(c.SOURCEPATH);
+							widget_exp_tag.addChild("xpos").setContent(Float.toString(c.positions[0]));
+							widget_exp_tag.addChild("ypos").setContent(Float.toString(c.positions[1]));
+							widget_exp_tag.addChild("xsize").setContent(Float.toString(c.sizes[0]));
+							widget_exp_tag.addChild("ysize").setContent(Float.toString(c.sizes[1]));
+							String round = "false";
+							if(c.round) {
+								round = "true";
+							}
+							else {
+								round = "false";
+							}
+							widget_exp_tag.addChild("round").setContent(round);
+							String hotkey = "-1";
+							if(c.hotkey > -1) {
+								hotkey = Integer.toString(c.hotkey);
+							}
+							else {
+								hotkey = "-1";
+							}
+							widget_exp_tag.addChild("hotkey").setContent(hotkey);
+							String checktype = "check";
+							if(c.CHECKTYPE == Checktype.CHECK) {
+								checktype = "check";
+							}
+							else if(c.CHECKTYPE == Checktype.CROSS) {
+								checktype = "cross";
+							}
+							else if(c.CHECKTYPE == Checktype.POINT) {
+								checktype = "point";
+							}
+							else if(c.CHECKTYPE == Checktype.CIRCLE) {
+								checktype = "circle";
+							}
+							widget_exp_tag.addChild("checktype").setContent(checktype);
+							String state = "false";
+							if(c.state) {
+								state = "true";
+							}
+							else {
+								state = "false";
+							}
+							widget_exp_tag.addChild("state").setContent(state);
+							widget_exp_tag.addChild("backgroundcolor").setContent(Integer.toString(c.background));
+							widget_exp_tag.addChild("foregroundcolor").setContent(Integer.toString(c.foreground));
+							widget_exp_tag.addChild("overcolor").setContent(Integer.toString(c.overcolor));
+							widget_exp_tag.addChild("clickcolor").setContent(Integer.toString(c.clickcolor));
+							String active = "true";
+							if(c.active) {
+								active = "true";
+							}
+							else {
+								active = "false";
+							}
+							widget_exp_tag.addChild("active").setContent(active);
+							String visible = "true";
+							if(c.visible) {
+								visible = "true";
+							}
+							else {
+								visible = "false";
+							}
+							widget_exp_tag.addChild("visible").setContent(visible);
+							widget_exp_tag.addChild("layer").setContent(Integer.toString(c.LAYER));
+							XML tooltip = widget_exp_tag.addChild("tooltip");
+							String tttext = "none";
+							if(c.tooltiptext != null) {
+								tttext = c.tooltiptext;
+							}
+							else {
+								tttext = "none";
+							}
+							tooltip.addChild("tttext").setContent(tttext);
+							String tttextsize = "none";
+							if(c.tooltiptextsize > -1) {
+								tttextsize = Float.toString(c.tooltiptextsize);
+							}
+							else {
+								tttextsize = "none";
+							}
+							tooltip.addChild("tttextsize").setContent(tttextsize);
+							tooltip.addChild("ttposx").setContent(Float.toString(c.ttpositions[0]));
+							tooltip.addChild("ttposy").setContent(Float.toString(c.ttpositions[1]));
+							tooltip.addChild("ttsizex").setContent(Float.toString(c.ttsizes[0]));
+							tooltip.addChild("ttsizey").setContent(Float.toString(c.ttsizes[1]));
+							tooltip.addChild("ttforeground").setContent(Integer.toString(c.ttforeground));
+							tooltip.addChild("ttbackground").setContent(Integer.toString(c.ttbackground));
+							String roundtt = "false";
+							if(c.roundtt) {
+								roundtt = "true";
+							}
+							else {
+								roundtt = "false";
+							}
+							tooltip.addChild("roundtt").setContent(roundtt);
+							tooltip.addChild("intervall").setContent(Float.toString(c.intervall));
+							tooltip.addChild("tttextoffsetx").setContent(Float.toString(c.tttextoffset[0]));
+							tooltip.addChild("tttextoffsety").setContent(Float.toString(c.tttextoffset[1]));
+							String enabled = "false";
+							if(c.tooltip_enabled) {
+								enabled = "true";
+							}
+							else {
+								enabled = "false";
+							}
+							tooltip.addChild("enabled").setContent(enabled);
+							XML dependencies = widget_exp_tag.addChild("dependencies");
+							String oc = "none", ou = "none";
+							if(c.oc != null) {
+								oc = c.oc;
+							}
+							else {
+								oc = "none";
+							}
+							if(c.ou != null) {
+								ou = c.ou;
+							}
+							else {
+								ou = "none";
+							}
+							dependencies.addChild("oncheck").setContent(oc);
+							dependencies.addChild("onuncheck").setContent(ou);
+						}
+						else if(w instanceof Label) {
+							widget_exp_tag.setString("type", "Label");
+							Label l = (Label)w;
+							widget_exp_tag.addChild("id").setContent(l.ID);
+							widget_exp_tag.addChild("sourcepath").setContent(l.SOURCEPATH);
+							widget_exp_tag.addChild("xpos").setContent(Float.toString(l.positions[0]));
+							widget_exp_tag.addChild("ypos").setContent(Float.toString(l.positions[1]));
+							widget_exp_tag.addChild("xsize").setContent(Float.toString(l.sizes[0]));
+							widget_exp_tag.addChild("ysize").setContent(Float.toString(l.sizes[1]));
+							String round = "false";
+							if(l.round) {
+								round = "true";
+							}
+							else {
+								round = "false";
+							}
+							widget_exp_tag.addChild("round").setContent(round);
+							widget_exp_tag.addChild("text").setContent(l.text);
+							widget_exp_tag.addChild("textsize").setContent(Float.toString(l.textSize));
+							
+							widget_exp_tag.addChild("textoffsetx").setContent(Float.toString(l.textoffset[0]));
+							widget_exp_tag.addChild("textoffsety").setContent(Float.toString(l.textoffset[1]));
+							widget_exp_tag.addChild("backgroundcolor").setContent(Integer.toString(l.background));
+							widget_exp_tag.addChild("foregroundcolor").setContent(Integer.toString(l.foreground));
+							
+							String visible = "true";
+							if(l.visible) {
+								visible = "true";
+							}
+							else {
+								visible = "false";
+							}
+							widget_exp_tag.addChild("visible").setContent(visible);
+							widget_exp_tag.addChild("layer").setContent(Integer.toString(l.LAYER));
+						}
+						else if(w instanceof Inputfield) {
+							widget_exp_tag.setString("type", "Inputfield");
+							Inputfield i = (Inputfield)w;
+							widget_exp_tag.addChild("id").setContent(i.ID);
+							widget_exp_tag.addChild("sourcepath").setContent(i.SOURCEPATH);
+							widget_exp_tag.addChild("xpos").setContent(Float.toString(i.positions[0]));
+							widget_exp_tag.addChild("ypos").setContent(Float.toString(i.positions[1]));
+							widget_exp_tag.addChild("xsize").setContent(Float.toString(i.sizes[0]));
+							widget_exp_tag.addChild("ysize").setContent(Float.toString(i.sizes[1]));
+							String round = "false";
+							if(i.round) {
+								round = "true";
+							}
+							else {
+								round = "false";
+							}
+							widget_exp_tag.addChild("round").setContent(round);
+							widget_exp_tag.addChild("inputtext").setContent(i.input_text);
+							widget_exp_tag.addChild("greyedtext").setContent(i.greyText);
+							widget_exp_tag.addChild("textsize").setContent(Float.toString(i.textSize));
+							String hotkey = "-1";
+							if(i.hotkey > -1) {
+								hotkey = Integer.toString(i.hotkey);
+							}
+							else {
+								hotkey = "-1";
+							}
+							widget_exp_tag.addChild("hotkey").setContent(hotkey);
+							widget_exp_tag.addChild("textoffsetx").setContent(Float.toString(i.textoffset[0]));
+							widget_exp_tag.addChild("textoffsety").setContent(Float.toString(i.textoffset[1]));
+							widget_exp_tag.addChild("backgroundcolor").setContent(Integer.toString(i.background));
+							widget_exp_tag.addChild("foregroundcolor").setContent(Integer.toString(i.foreground));
+							widget_exp_tag.addChild("overcolor").setContent(Integer.toString(i.overcolor));
+							widget_exp_tag.addChild("inputcolor").setContent(Integer.toString(i.input_color));
+							widget_exp_tag.addChild("limitinputtext").setContent(Integer.toString(i.limit_input_length));
+							String active = "true";
+							if(i.active) {
+								active = "true";
+							}
+							else {
+								active = "false";
+							}
+							widget_exp_tag.addChild("active").setContent(active);
+							String visible = "true";
+							if(i.visible) {
+								visible = "true";
+							}
+							else {
+								visible = "false";
+							}
+							widget_exp_tag.addChild("visible").setContent(visible);
+							widget_exp_tag.addChild("layer").setContent(Integer.toString(i.LAYER));
+							XML tooltip = widget_exp_tag.addChild("tooltip");
+							String tttext = "none";
+							if(i.tooltiptext != null) {
+								tttext = i.tooltiptext;
+							}
+							else {
+								tttext = "none";
+							}
+							tooltip.addChild("tttext").setContent(tttext);
+							String tttextsize = "none";
+							if(i.tooltiptextsize > -1) {
+								tttextsize = Float.toString(i.tooltiptextsize);
+							}
+							else {
+								tttextsize = "none";
+							}
+							tooltip.addChild("tttextsize").setContent(tttextsize);
+							tooltip.addChild("ttposx").setContent(Float.toString(i.ttpositions[0]));
+							tooltip.addChild("ttposy").setContent(Float.toString(i.ttpositions[1]));
+							tooltip.addChild("ttsizex").setContent(Float.toString(i.ttsizes[0]));
+							tooltip.addChild("ttsizey").setContent(Float.toString(i.ttsizes[1]));
+							tooltip.addChild("ttforeground").setContent(Integer.toString(i.ttforeground));
+							tooltip.addChild("ttbackground").setContent(Integer.toString(i.ttbackground));
+							String roundtt = "false";
+							if(i.roundtt) {
+								roundtt = "true";
+							}
+							else {
+								roundtt = "false";
+							}
+							tooltip.addChild("roundtt").setContent(roundtt);
+							tooltip.addChild("intervall").setContent(Float.toString(i.intervall));
+							tooltip.addChild("tttextoffsetx").setContent(Float.toString(i.tttextoffset[0]));
+							tooltip.addChild("tttextoffsety").setContent(Float.toString(i.tttextoffset[1]));
+							String enabled = "false";
+							if(i.tooltip_enabled) {
+								enabled = "true";
+							}
+							else {
+								enabled = "false";
+							}
+							tooltip.addChild("enabled").setContent(enabled);
+						}
+						else if(w instanceof BB_Image) {
+							widget_exp_tag.setString("type", "BB_Image");
+							BB_Image bbi = (BB_Image)w;
+							widget_exp_tag.addChild("id").setContent(bbi.ID);
+							widget_exp_tag.addChild("sourcepath").setContent(bbi.SOURCEPATH);
+							widget_exp_tag.addChild("xpos").setContent(Float.toString(bbi.positions[0]));
+							widget_exp_tag.addChild("ypos").setContent(Float.toString(bbi.positions[1]));
+							widget_exp_tag.addChild("xsize").setContent(Float.toString(bbi.sizes[0]));
+							widget_exp_tag.addChild("ysize").setContent(Float.toString(bbi.sizes[1]));
+							
+							String active = "true";
+							if(bbi.active) {
+								active = "true";
+							}
+							else {
+								active = "false";
+							}
+							widget_exp_tag.addChild("active").setContent(active);
+							String visible = "true";
+							if(bbi.visible) {
+								visible = "true";
+							}
+							else {
+								visible = "false";
+							}
+							widget_exp_tag.addChild("visible").setContent(visible);
+							widget_exp_tag.addChild("layer").setContent(Integer.toString(bbi.LAYER));
+							if(bbi.crops.size() > 0) {
+								XML crops = widget_exp_tag.addChild("crops");
+								for(BB_Image.Crop crop: bbi.crops) {
+									String crop_str = crop.edge + "," + Integer.toString(crop.pixel_amount);
+									crops.addChild("crop").setContent(crop_str);
+								}
+							}
+							
+							XML tooltip = widget_exp_tag.addChild("tooltip");
+							String tttext = "none";
+							if(bbi.tooltiptext != null) {
+								tttext = bbi.tooltiptext;
+							}
+							else {
+								tttext = "none";
+							}
+							tooltip.addChild("tttext").setContent(tttext);
+							String tttextsize = "none";
+							if(bbi.tooltiptextsize > -1) {
+								tttextsize = Float.toString(bbi.tooltiptextsize);
+							}
+							else {
+								tttextsize = "none";
+							}
+							tooltip.addChild("tttextsize").setContent(tttextsize);
+							tooltip.addChild("ttposx").setContent(Float.toString(bbi.ttpositions[0]));
+							tooltip.addChild("ttposy").setContent(Float.toString(bbi.ttpositions[1]));
+							tooltip.addChild("ttsizex").setContent(Float.toString(bbi.ttsizes[0]));
+							tooltip.addChild("ttsizey").setContent(Float.toString(bbi.ttsizes[1]));
+							tooltip.addChild("ttforeground").setContent(Integer.toString(bbi.ttforeground));
+							tooltip.addChild("ttbackground").setContent(Integer.toString(bbi.ttbackground));
+							String roundtt = "false";
+							if(bbi.roundtt) {
+								roundtt = "true";
+							}
+							else {
+								roundtt = "false";
+							}
+							tooltip.addChild("roundtt").setContent(roundtt);
+							tooltip.addChild("intervall").setContent(Float.toString(bbi.intervall));
+							tooltip.addChild("tttextoffsetx").setContent(Float.toString(bbi.tttextoffset[0]));
+							tooltip.addChild("tttextoffsety").setContent(Float.toString(bbi.tttextoffset[1]));
+							String enabled = "false";
+							if(bbi.tooltip_enabled) {
+								enabled = "true";
+							}
+							else {
+								enabled = "false";
+							}
+							tooltip.addChild("enabled").setContent(enabled);
+							XML dependencies = widget_exp_tag.addChild("dependencies");
+							dependencies.addChild("sourceimg").setContent(bbi.imgpath);
+						}
+					}
+				}
+				else if(this.MODE == WidgetMode.SURFACE) {
+					for(BeastySurface b : this.surfaces) {
+						XML surface_exp_tag = layout_exp_tag.addChild("BeastySurface");
+						XML settings_surface_exp_tag = surface_exp_tag.addChild("Settings");
+						settings_surface_exp_tag.addChild("id").setContent(b.ID);
+						settings_surface_exp_tag.addChild("sourcepath").setContent(b.SOURCEPATH);
+						settings_surface_exp_tag.addChild("xpos").setContent(Float.toString(b.posx));
+						settings_surface_exp_tag.addChild("ypos").setContent(Float.toString(b.posy));
+						String strbgsurface = "false";
+						if(b.stretch_backgroundimg) {
+							strbgsurface = "true";
+						}
+						else {
+							strbgsurface = "false";
+						}
+						settings_surface_exp_tag.addChild("stretchbackgroundimg").setContent(strbgsurface);
+						settings_surface_exp_tag.addChild("backgroundcolor").setContent(Integer.toString(b.backgroundcolor));
+						settings_surface_exp_tag.addChild("imgoffsetx").setContent(Float.toString(b.offsetx));
+						settings_surface_exp_tag.addChild("imgoffsety").setContent(Float.toString(b.offsety));
+						XML dependenciessurface_exp_tag = settings_surface_exp_tag.addChild("dependencies");
+						dependenciessurface_exp_tag.addChild("backgroundimgpath").setContent(b.imgpath);
+						
+						XML widgets_surface_exp_tag = surface_exp_tag.addChild("Widgets");
+						
+						for(Widget w : b.widgets) {
+							XML widget_surface_exp_tag = widgets_surface_exp_tag.addChild("Widget");
+							
+							if(w instanceof Button) {
+								widget_surface_exp_tag.setString("type", "Button");
+								Button bu = (Button)w;
+								widget_surface_exp_tag.addChild("id").setContent(bu.ID);
+								widget_surface_exp_tag.addChild("sourcepath").setContent(bu.SOURCEPATH);
+								widget_surface_exp_tag.addChild("xpos").setContent(Float.toString(bu.positions[0]));
+								widget_surface_exp_tag.addChild("ypos").setContent(Float.toString(bu.positions[1]));
+								widget_surface_exp_tag.addChild("xsize").setContent(Float.toString(bu.sizes[0]));
+								widget_surface_exp_tag.addChild("ysize").setContent(Float.toString(bu.sizes[1]));
+								String round = "false";
+								if(bu.round) {
+									round = "true";
+								}
+								else {
+									round = "false";
+								}
+								widget_surface_exp_tag.addChild("round").setContent(round);
+								widget_surface_exp_tag.addChild("text").setContent(bu.text);
+								widget_surface_exp_tag.addChild("textsize").setContent(Float.toString(bu.textSize));
+								String hotkey = "-1";
+								if(bu.hotkey > -1) {
+									hotkey = Integer.toString(bu.hotkey);
+								}
+								else {
+									hotkey = "-1";
+								}
+								widget_surface_exp_tag.addChild("hotkey").setContent(hotkey);
+								widget_surface_exp_tag.addChild("textoffsetx").setContent(Float.toString(bu.textoffset[0]));
+								widget_surface_exp_tag.addChild("textoffsety").setContent(Float.toString(bu.textoffset[1]));
+								widget_surface_exp_tag.addChild("backgroundcolor").setContent(Integer.toString(bu.background));
+								widget_surface_exp_tag.addChild("foregroundcolor").setContent(Integer.toString(bu.foreground));
+								widget_surface_exp_tag.addChild("overcolor").setContent(Integer.toString(bu.overcolor));
+								widget_surface_exp_tag.addChild("clickcolor").setContent(Integer.toString(bu.clickcolor));
+								String active = "true";
+								if(bu.active) {
+									active = "true";
+								}
+								else {
+									active = "false";
+								}
+								widget_surface_exp_tag.addChild("active").setContent(active);
+								String visible = "true";
+								if(bu.visible) {
+									visible = "true";
+								}
+								else {
+									visible = "false";
+								}
+								widget_surface_exp_tag.addChild("visible").setContent(visible);
+								widget_surface_exp_tag.addChild("layer").setContent(Integer.toString(bu.LAYER));
+								XML tooltip = widget_surface_exp_tag.addChild("tooltip");
+								String tttext = "none";
+								if(bu.tooltiptext != null) {
+									tttext = bu.tooltiptext;
+								}
+								else {
+									tttext = "none";
+								}
+								tooltip.addChild("tttext").setContent(tttext);
+								String tttextsize = "none";
+								if(bu.tooltiptextsize > -1) {
+									tttextsize = Float.toString(bu.tooltiptextsize);
+								}
+								else {
+									tttextsize = "none";
+								}
+								tooltip.addChild("tttextsize").setContent(tttextsize);
+								tooltip.addChild("ttposx").setContent(Float.toString(bu.ttpositions[0]));
+								tooltip.addChild("ttposy").setContent(Float.toString(bu.ttpositions[1]));
+								tooltip.addChild("ttsizex").setContent(Float.toString(bu.ttsizes[0]));
+								tooltip.addChild("ttsizey").setContent(Float.toString(bu.ttsizes[1]));
+								tooltip.addChild("ttforeground").setContent(Integer.toString(bu.ttforeground));
+								tooltip.addChild("ttbackground").setContent(Integer.toString(bu.ttbackground));
+								String roundtt = "false";
+								if(bu.roundtt) {
+									roundtt = "true";
+								}
+								else {
+									roundtt = "false";
+								}
+								tooltip.addChild("roundtt").setContent(roundtt);
+								tooltip.addChild("intervall").setContent(Float.toString(bu.intervall));
+								tooltip.addChild("tttextoffsetx").setContent(Float.toString(bu.tttextoffset[0]));
+								tooltip.addChild("tttextoffsety").setContent(Float.toString(bu.tttextoffset[1]));
+								String enabled = "false";
+								if(bu.tooltip_enabled) {
+									enabled = "true";
+								}
+								else {
+									enabled = "false";
+								}
+								tooltip.addChild("enabled").setContent(enabled);
+								XML dependencies = widget_surface_exp_tag.addChild("dependencies");
+								String olc = "none", omc = "none", orc = "none";
+								if(bu.olc != null) {
+									olc = bu.olc;
+								}
+								else {
+									olc = "none";
+								}
+								if(bu.omc != null) {
+									omc = bu.omc;
+								}
+								else {
+									omc = "none";
+								}
+								if(bu.orc != null) {
+									orc = bu.orc;
+								}
+								else {
+									orc = "none";
+								}
+								dependencies.addChild("onleftclick").setContent(olc);
+								dependencies.addChild("onmiddleclick").setContent(omc);
+								dependencies.addChild("onrightclick").setContent(orc);
+							}
+							else if(w instanceof Checkbox) {
+								widget_surface_exp_tag.setString("type", "Checkbox");
+								Checkbox c = (Checkbox)w;
+								widget_surface_exp_tag.addChild("id").setContent(c.ID);
+								widget_surface_exp_tag.addChild("sourcepath").setContent(c.SOURCEPATH);
+								widget_surface_exp_tag.addChild("xpos").setContent(Float.toString(c.positions[0]));
+								widget_surface_exp_tag.addChild("ypos").setContent(Float.toString(c.positions[1]));
+								widget_surface_exp_tag.addChild("xsize").setContent(Float.toString(c.sizes[0]));
+								widget_surface_exp_tag.addChild("ysize").setContent(Float.toString(c.sizes[1]));
+								String round = "false";
+								if(c.round) {
+									round = "true";
+								}
+								else {
+									round = "false";
+								}
+								widget_surface_exp_tag.addChild("round").setContent(round);
+								String hotkey = "-1";
+								if(c.hotkey > -1) {
+									hotkey = Integer.toString(c.hotkey);
+								}
+								else {
+									hotkey = "-1";
+								}
+								widget_surface_exp_tag.addChild("hotkey").setContent(hotkey);
+								String checktype = "check";
+								if(c.CHECKTYPE == Checktype.CHECK) {
+									checktype = "check";
+								}
+								else if(c.CHECKTYPE == Checktype.CROSS) {
+									checktype = "cross";
+								}
+								else if(c.CHECKTYPE == Checktype.POINT) {
+									checktype = "point";
+								}
+								else if(c.CHECKTYPE == Checktype.CIRCLE) {
+									checktype = "circle";
+								}
+								widget_surface_exp_tag.addChild("checktype").setContent(checktype);
+								String state = "false";
+								if(c.state) {
+									state = "true";
+								}
+								else {
+									state = "false";
+								}
+								widget_surface_exp_tag.addChild("state").setContent(state);
+								widget_surface_exp_tag.addChild("backgroundcolor").setContent(Integer.toString(c.background));
+								widget_surface_exp_tag.addChild("foregroundcolor").setContent(Integer.toString(c.foreground));
+								widget_surface_exp_tag.addChild("overcolor").setContent(Integer.toString(c.overcolor));
+								widget_surface_exp_tag.addChild("clickcolor").setContent(Integer.toString(c.clickcolor));
+								String active = "true";
+								if(c.active) {
+									active = "true";
+								}
+								else {
+									active = "false";
+								}
+								widget_surface_exp_tag.addChild("active").setContent(active);
+								String visible = "true";
+								if(c.visible) {
+									visible = "true";
+								}
+								else {
+									visible = "false";
+								}
+								widget_surface_exp_tag.addChild("visible").setContent(visible);
+								widget_surface_exp_tag.addChild("layer").setContent(Integer.toString(c.LAYER));
+								XML tooltip = widget_surface_exp_tag.addChild("tooltip");
+								String tttext = "none";
+								if(c.tooltiptext != null) {
+									tttext = c.tooltiptext;
+								}
+								else {
+									tttext = "none";
+								}
+								tooltip.addChild("tttext").setContent(tttext);
+								String tttextsize = "none";
+								if(c.tooltiptextsize > -1) {
+									tttextsize = Float.toString(c.tooltiptextsize);
+								}
+								else {
+									tttextsize = "none";
+								}
+								tooltip.addChild("tttextsize").setContent(tttextsize);
+								tooltip.addChild("ttposx").setContent(Float.toString(c.ttpositions[0]));
+								tooltip.addChild("ttposy").setContent(Float.toString(c.ttpositions[1]));
+								tooltip.addChild("ttsizex").setContent(Float.toString(c.ttsizes[0]));
+								tooltip.addChild("ttsizey").setContent(Float.toString(c.ttsizes[1]));
+								tooltip.addChild("ttforeground").setContent(Integer.toString(c.ttforeground));
+								tooltip.addChild("ttbackground").setContent(Integer.toString(c.ttbackground));
+								String roundtt = "false";
+								if(c.roundtt) {
+									roundtt = "true";
+								}
+								else {
+									roundtt = "false";
+								}
+								tooltip.addChild("roundtt").setContent(roundtt);
+								tooltip.addChild("intervall").setContent(Float.toString(c.intervall));
+								tooltip.addChild("tttextoffsetx").setContent(Float.toString(c.tttextoffset[0]));
+								tooltip.addChild("tttextoffsety").setContent(Float.toString(c.tttextoffset[1]));
+								String enabled = "false";
+								if(c.tooltip_enabled) {
+									enabled = "true";
+								}
+								else {
+									enabled = "false";
+								}
+								tooltip.addChild("enabled").setContent(enabled);
+								XML dependencies = widget_surface_exp_tag.addChild("dependencies");
+								String oc = "none", ou = "none";
+								if(c.oc != null) {
+									oc = c.oc;
+								}
+								else {
+									oc = "none";
+								}
+								if(c.ou != null) {
+									ou = c.ou;
+								}
+								else {
+									ou = "none";
+								}
+								dependencies.addChild("oncheck").setContent(oc);
+								dependencies.addChild("onuncheck").setContent(ou);
+							}
+							else if(w instanceof Label) {
+								widget_surface_exp_tag.setString("type", "Label");
+								Label l = (Label)w;
+								widget_surface_exp_tag.addChild("id").setContent(l.ID);
+								widget_surface_exp_tag.addChild("sourcepath").setContent(l.SOURCEPATH);
+								widget_surface_exp_tag.addChild("xpos").setContent(Float.toString(l.positions[0]));
+								widget_surface_exp_tag.addChild("ypos").setContent(Float.toString(l.positions[1]));
+								widget_surface_exp_tag.addChild("xsize").setContent(Float.toString(l.sizes[0]));
+								widget_surface_exp_tag.addChild("ysize").setContent(Float.toString(l.sizes[1]));
+								String round = "false";
+								if(l.round) {
+									round = "true";
+								}
+								else {
+									round = "false";
+								}
+								widget_surface_exp_tag.addChild("round").setContent(round);
+								widget_surface_exp_tag.addChild("text").setContent(l.text);
+								widget_surface_exp_tag.addChild("textsize").setContent(Float.toString(l.textSize));
+								
+								widget_surface_exp_tag.addChild("textoffsetx").setContent(Float.toString(l.textoffset[0]));
+								widget_surface_exp_tag.addChild("textoffsety").setContent(Float.toString(l.textoffset[1]));
+								widget_surface_exp_tag.addChild("backgroundcolor").setContent(Integer.toString(l.background));
+								widget_surface_exp_tag.addChild("foregroundcolor").setContent(Integer.toString(l.foreground));
+								
+								String visible = "true";
+								if(l.visible) {
+									visible = "true";
+								}
+								else {
+									visible = "false";
+								}
+								widget_surface_exp_tag.addChild("visible").setContent(visible);
+								widget_surface_exp_tag.addChild("layer").setContent(Integer.toString(l.LAYER));
+							}
+							else if(w instanceof Inputfield) {
+								widget_surface_exp_tag.setString("type", "Inputfield");
+								Inputfield i = (Inputfield)w;
+								widget_surface_exp_tag.addChild("id").setContent(i.ID);
+								widget_surface_exp_tag.addChild("sourcepath").setContent(i.SOURCEPATH);
+								widget_surface_exp_tag.addChild("xpos").setContent(Float.toString(i.positions[0]));
+								widget_surface_exp_tag.addChild("ypos").setContent(Float.toString(i.positions[1]));
+								widget_surface_exp_tag.addChild("xsize").setContent(Float.toString(i.sizes[0]));
+								widget_surface_exp_tag.addChild("ysize").setContent(Float.toString(i.sizes[1]));
+								String round = "false";
+								if(i.round) {
+									round = "true";
+								}
+								else {
+									round = "false";
+								}
+								widget_surface_exp_tag.addChild("round").setContent(round);
+								widget_surface_exp_tag.addChild("inputtext").setContent(i.input_text);
+								widget_surface_exp_tag.addChild("greyedtext").setContent(i.greyText);
+								widget_surface_exp_tag.addChild("textsize").setContent(Float.toString(i.textSize));
+								String hotkey = "-1";
+								if(i.hotkey > -1) {
+									hotkey = Integer.toString(i.hotkey);
+								}
+								else {
+									hotkey = "-1";
+								}
+								widget_surface_exp_tag.addChild("hotkey").setContent(hotkey);
+								widget_surface_exp_tag.addChild("textoffsetx").setContent(Float.toString(i.textoffset[0]));
+								widget_surface_exp_tag.addChild("textoffsety").setContent(Float.toString(i.textoffset[1]));
+								widget_surface_exp_tag.addChild("backgroundcolor").setContent(Integer.toString(i.background));
+								widget_surface_exp_tag.addChild("foregroundcolor").setContent(Integer.toString(i.foreground));
+								widget_surface_exp_tag.addChild("overcolor").setContent(Integer.toString(i.overcolor));
+								widget_surface_exp_tag.addChild("inputcolor").setContent(Integer.toString(i.input_color));
+								widget_surface_exp_tag.addChild("limitinputtext").setContent(Integer.toString(i.limit_input_length));
+								String active = "true";
+								if(i.active) {
+									active = "true";
+								}
+								else {
+									active = "false";
+								}
+								widget_surface_exp_tag.addChild("active").setContent(active);
+								String visible = "true";
+								if(i.visible) {
+									visible = "true";
+								}
+								else {
+									visible = "false";
+								}
+								widget_surface_exp_tag.addChild("visible").setContent(visible);
+								widget_surface_exp_tag.addChild("layer").setContent(Integer.toString(i.LAYER));
+								XML tooltip = widget_surface_exp_tag.addChild("tooltip");
+								String tttext = "none";
+								if(i.tooltiptext != null) {
+									tttext = i.tooltiptext;
+								}
+								else {
+									tttext = "none";
+								}
+								tooltip.addChild("tttext").setContent(tttext);
+								String tttextsize = "none";
+								if(i.tooltiptextsize > -1) {
+									tttextsize = Float.toString(i.tooltiptextsize);
+								}
+								else {
+									tttextsize = "none";
+								}
+								tooltip.addChild("tttextsize").setContent(tttextsize);
+								tooltip.addChild("ttposx").setContent(Float.toString(i.ttpositions[0]));
+								tooltip.addChild("ttposy").setContent(Float.toString(i.ttpositions[1]));
+								tooltip.addChild("ttsizex").setContent(Float.toString(i.ttsizes[0]));
+								tooltip.addChild("ttsizey").setContent(Float.toString(i.ttsizes[1]));
+								tooltip.addChild("ttforeground").setContent(Integer.toString(i.ttforeground));
+								tooltip.addChild("ttbackground").setContent(Integer.toString(i.ttbackground));
+								String roundtt = "false";
+								if(i.roundtt) {
+									roundtt = "true";
+								}
+								else {
+									roundtt = "false";
+								}
+								tooltip.addChild("roundtt").setContent(roundtt);
+								tooltip.addChild("intervall").setContent(Float.toString(i.intervall));
+								tooltip.addChild("tttextoffsetx").setContent(Float.toString(i.tttextoffset[0]));
+								tooltip.addChild("tttextoffsety").setContent(Float.toString(i.tttextoffset[1]));
+								String enabled = "false";
+								if(i.tooltip_enabled) {
+									enabled = "true";
+								}
+								else {
+									enabled = "false";
+								}
+								tooltip.addChild("enabled").setContent(enabled);
+							}
+							else if(w instanceof BB_Image) {
+								widget_surface_exp_tag.setString("type", "BB_Image");
+								BB_Image bbi = (BB_Image)w;
+								widget_surface_exp_tag.addChild("id").setContent(bbi.ID);
+								widget_surface_exp_tag.addChild("sourcepath").setContent(bbi.SOURCEPATH);
+								widget_surface_exp_tag.addChild("xpos").setContent(Float.toString(bbi.positions[0]));
+								widget_surface_exp_tag.addChild("ypos").setContent(Float.toString(bbi.positions[1]));
+								widget_surface_exp_tag.addChild("xsize").setContent(Float.toString(bbi.sizes[0]));
+								widget_surface_exp_tag.addChild("ysize").setContent(Float.toString(bbi.sizes[1]));
+								
+								String active = "true";
+								if(bbi.active) {
+									active = "true";
+								}
+								else {
+									active = "false";
+								}
+								widget_surface_exp_tag.addChild("active").setContent(active);
+								String visible = "true";
+								if(bbi.visible) {
+									visible = "true";
+								}
+								else {
+									visible = "false";
+								}
+								widget_surface_exp_tag.addChild("visible").setContent(visible);
+								widget_surface_exp_tag.addChild("layer").setContent(Integer.toString(bbi.LAYER));
+								if(bbi.crops.size() > 0) {
+									XML crops = widget_surface_exp_tag.addChild("crops");
+									for(BB_Image.Crop crop: bbi.crops) {
+										String crop_str = crop.edge + "," + Integer.toString(crop.pixel_amount);
+										crops.addChild("crop").setContent(crop_str);
+									}
+								}
+								
+								XML tooltip = widget_surface_exp_tag.addChild("tooltip");
+								String tttext = "none";
+								if(bbi.tooltiptext != null) {
+									tttext = bbi.tooltiptext;
+								}
+								else {
+									tttext = "none";
+								}
+								tooltip.addChild("tttext").setContent(tttext);
+								String tttextsize = "none";
+								if(bbi.tooltiptextsize > -1) {
+									tttextsize = Float.toString(bbi.tooltiptextsize);
+								}
+								else {
+									tttextsize = "none";
+								}
+								tooltip.addChild("tttextsize").setContent(tttextsize);
+								tooltip.addChild("ttposx").setContent(Float.toString(bbi.ttpositions[0]));
+								tooltip.addChild("ttposy").setContent(Float.toString(bbi.ttpositions[1]));
+								tooltip.addChild("ttsizex").setContent(Float.toString(bbi.ttsizes[0]));
+								tooltip.addChild("ttsizey").setContent(Float.toString(bbi.ttsizes[1]));
+								tooltip.addChild("ttforeground").setContent(Integer.toString(bbi.ttforeground));
+								tooltip.addChild("ttbackground").setContent(Integer.toString(bbi.ttbackground));
+								String roundtt = "false";
+								if(bbi.roundtt) {
+									roundtt = "true";
+								}
+								else {
+									roundtt = "false";
+								}
+								tooltip.addChild("roundtt").setContent(roundtt);
+								tooltip.addChild("intervall").setContent(Float.toString(bbi.intervall));
+								tooltip.addChild("tttextoffsetx").setContent(Float.toString(bbi.tttextoffset[0]));
+								tooltip.addChild("tttextoffsety").setContent(Float.toString(bbi.tttextoffset[1]));
+								String enabled = "false";
+								if(bbi.tooltip_enabled) {
+									enabled = "true";
+								}
+								else {
+									enabled = "false";
+								}
+								tooltip.addChild("enabled").setContent(enabled);
+								XML dependencies = widget_surface_exp_tag.addChild("dependencies");
+								dependencies.addChild("sourceimg").setContent(bbi.imgpath);
+							}
+						}
+					}
+				}
+				
+				this.REF.saveXML(exportxml, path);
 		}
 		catch(Exception e){
 			PApplet.println("WARNING(BB): COULD NOT EXPORT LAYOUT -> CONTINUEING WITHOUT EXPORT");
@@ -1436,8 +2356,7 @@ public class BeastyWorld
 						
 						if(dependencies) {
 							if(surfacebackgroundimgpath_imp != "none") {
-								PImage img = this.REF.loadImage(surfacebackgroundimgpath_imp);
-								surface.setSurfaceImage(img, surfacestretchbi_imp);
+								surface.setSurfaceImage(surfacebackgroundimgpath_imp, surfacestretchbi_imp);
 							}
 						}
 						
@@ -3131,12 +4050,12 @@ public class BeastyWorld
 	
 	//******TABSWITCH METHODS******
 	
-		//generates an order list based of the y-position to cycle through on tab switch
-		//using java stream syntax might not work
-		public void generate_tabswitchlist() {
-			this.tabswitchlist = (ArrayList<Widget>) this.widgets.stream()
-					.sorted(Comparator.comparing(widget -> widget.positions[1]))
-					.collect(Collectors.toList());
-			
-		}
+	//generates an order list based of the y-position to cycle through on tab switch
+	//using java stream syntax might not work
+	protected void generate_tabswitchlist() {
+		this.tabswitchlist = (ArrayList<Widget>) this.widgets.stream()
+				.sorted(Comparator.comparing(widget -> widget.positions[1]))
+				.collect(Collectors.toList());
+		
+	}
 }

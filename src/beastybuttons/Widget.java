@@ -48,22 +48,22 @@ abstract class Widget
 	protected int clickcolor;
 	
 	//the background color of the tooltip
-	protected int ttbackground;
+	protected int ttbackground = 100;
 		
 	//the foreground color of the tooltip
-	protected int ttforeground;
+	protected int ttforeground = 100;
 		
 	//the text of the tooltip
 	protected String tooltiptext = null;
 		
 	//the textsize of the tooltip
-	protected float tooltiptextsize;
+	protected float tooltiptextsize = 0f;
 	
 	//offset the text in the tooltip
   	protected float[] tttextoffset = {0f, 0f};
 	
 	//is the tooltip enabled?
-	protected boolean tooltip_enabled;
+	protected boolean tooltip_enabled = false;
 	
 	//enable disappear for the tooltip over time?
     protected boolean enable_intervall = false;

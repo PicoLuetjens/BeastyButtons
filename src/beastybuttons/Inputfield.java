@@ -34,7 +34,7 @@ public class Inputfield extends Widget
 	protected String input_text = "";
 	
 	//hotkey
-	protected int hotkey;
+	protected int hotkey = -1;
 	
 	//offset the text in the inputfield
   	protected float[] textoffset = {0f, 0f};

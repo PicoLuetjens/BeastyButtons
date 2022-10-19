@@ -22,7 +22,7 @@ public class Button extends Widget
 	protected boolean round;
 	
 	//hotkey
-	protected int hotkey;
+	protected int hotkey = -1;
 	
 	//methods on click(on left click, on middle click, on right click)
   	protected String olc, omc, orc;
@@ -479,40 +479,6 @@ public class Button extends Widget
     	this.textoffset[1] = y;
     	return this;
     }
-	
-	public Button copySettings(Button b) {
-		
-		//copy the settings by value except the sourcepath, id, onclick variables, hotkey variable, already_added, line_separator, PApplet ref,
-		//timeStep, selector_of_element, clickssincestart, tab_selected, and instance value
-		
-		this.text = b.text;
-		this.textSize = b.textSize;
-		this.round = b.round;
-		this.textoffset = b.textoffset;
-		this.tttextoffset = b.tttextoffset;
-		this.active = b.active;
-		this.visible = b.visible;
-		this.LAYER = b.LAYER;
-		this.positions = b.positions;
-		this.sizes = b.sizes;
-		this.ttsizes = b.ttsizes;
-		this.ttpositions = b.ttpositions;
-		this.rendercolor = b.rendercolor;
-		this.background = b.background;
-		this.foreground = b.foreground;
-		this.overcolor = b.overcolor;
-		this.clickcolor = b.clickcolor;
-		this.ttbackground = b.ttbackground;
-		this.ttforeground = b.ttforeground;
-		this.tooltiptext = b.tooltiptext;
-		this.tooltiptextsize = b.tooltiptextsize;
-		this.tooltip_enabled = b.tooltip_enabled;
-		this.enable_intervall = b.enable_intervall;
-		this.intervall = b.intervall;
-		this.roundtt = b.roundtt;
-		
-		return this;
-	}
 	
 	
 	//******GET METHODS******

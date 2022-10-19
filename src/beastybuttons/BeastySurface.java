@@ -20,8 +20,10 @@ public class BeastySurface
 	
 	private PImage backgroundimg;
 	
+	protected String imgpath = "none";
+	
 	//should the backgroundimage be stretched to fit in frame?
-	private boolean stretch_backgroundimg = false;
+	protected boolean stretch_backgroundimg = false;
 	
 	//the sizes for the backgroundimage
 	private float max_imgsize_x = 0f, max_imgsize_y = 0f;
@@ -88,15 +90,6 @@ public class BeastySurface
 	
 	//******SET METHODS******
 	
-	//copy the settings from another surface(without specific like sourcepath, id, widgets etc.)
-	@Experimental
-	public BeastySurface copySettings(BeastySurface source) {
-		PApplet.println("WARNING(BB): copySettings() IS STILL HIGHLY EXPERIMENTAL, AVOID USE IF POSSIBLE");
-		this.setSurfaceImage(source.backgroundimg, source.stretch_backgroundimg);
-		this.setSurfaceColor(source.backgroundcolor);
-		return this;
-	}
-	
 	//edits the SOURCEPATH of this instance(called from top class)
 	protected void editSourcePath(String action, String id) {
 		String[] splits = this.SOURCEPATH.split("/");
@@ -129,9 +122,13 @@ public class BeastySurface
 	}
 	
 	
-	public BeastySurface setSurfaceImage(PImage img, boolean stretch) {
+	public BeastySurface setSurfaceImage(String path, boolean stretch) {
+		if(path.contains(":")) {
+			throw new RuntimeException("only relative pathes are supported");
+		}
+		this.imgpath = path;
 		this.stretch_backgroundimg = stretch;
-		this.backgroundimg = img;
+		this.backgroundimg = this.REF.loadImage(path);
 		
 		//calculate the max scale of the image
 		if(!this.stretch_backgroundimg) {
@@ -326,7 +323,7 @@ public class BeastySurface
 	
 	//generates an order list based of the y-position to cycle through on tab switch
 	//using java stream syntax might not work
-	public void generate_tabswitchlist() {
+	protected void generate_tabswitchlist() {
 		this.tabswitchlist = (ArrayList<Widget>) this.widgets.stream()
 				.sorted(Comparator.comparing(widget -> widget.positions[1]))
 				.collect(Collectors.toList());
