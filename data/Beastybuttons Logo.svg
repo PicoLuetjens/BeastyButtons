@@ -2,20 +2,20 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    id="svg2"
    version="1.1"
-   inkscape:version="0.91 r13725"
+   inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)"
    width="300"
    height="300"
    viewBox="0 0 300 300"
-   sodipodi:docname="Beastybuttons Logo.svg">
+   sodipodi:docname="Beastybuttons Logo.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
   <metadata
      id="metadata8">
     <rdf:RDF>
@@ -24,7 +24,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -39,17 +39,20 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1536"
-     inkscape:window-height="803"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
      id="namedview4"
      showgrid="false"
      inkscape:zoom="0.61378413"
-     inkscape:cx="260.00195"
-     inkscape:cy="107.15995"
+     inkscape:cx="222.39089"
+     inkscape:cy="107.52966"
      inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
-     inkscape:current-layer="layer2" />
+     inkscape:current-layer="layer4"
+     inkscape:showpageshadow="2"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1" />
   <g
      inkscape:groupmode="layer"
      id="layer1"
@@ -84,15 +87,15 @@
      transform="translate(0,-469)">
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:147.08787537px;line-height:125%;font-family:Harrington;-inkscape-font-specification:Harrington;letter-spacing:0px;word-spacing:0px;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:Harrington;-inkscape-font-specification:Harrington;letter-spacing:0px;word-spacing:0px;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        x="136.47308"
        y="672.52893"
-       id="text3364"
-       sodipodi:linespacing="125%"><tspan
+       id="text3364"><tspan
          sodipodi:role="line"
          x="136.47308"
          y="672.52893"
-         id="tspan3372">B</tspan></text>
+         id="tspan3372"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:147.088px;line-height:1.25;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, '">B</tspan></text>
   </g>
   <g
      inkscape:groupmode="layer"
@@ -102,14 +105,14 @@
      transform="translate(0,-469)">
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:147.08787537px;line-height:125%;font-family:Harrington;-inkscape-font-specification:Harrington;letter-spacing:0px;word-spacing:0px;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:Harrington;-inkscape-font-specification:Harrington;letter-spacing:0px;word-spacing:0px;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        x="76.473083"
        y="682.52893"
-       id="text3364-0"
-       sodipodi:linespacing="125%"><tspan
+       id="text3364-0"><tspan
          sodipodi:role="line"
          x="76.473083"
          y="682.52893"
-         id="tspan3372-4">B</tspan></text>
+         id="tspan3372-4"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:147.088px;line-height:1.25;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, '">B</tspan></text>
   </g>
 </svg>

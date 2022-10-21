@@ -359,6 +359,10 @@ public class Inputfield extends Widget
     	return this;
     }
 	
+    public Inputfield clearInput() {
+    	this.input_text = "";
+    	return this;
+    }
     
     public Inputfield setTextsize(float textSize, boolean update) {
     	if(this.input_text.length() > 0) {
