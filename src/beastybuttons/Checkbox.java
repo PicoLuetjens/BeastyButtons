@@ -34,7 +34,8 @@ public class Checkbox extends Widget
 	//methods on check(on check, on uncheck)
   	protected String oc, ou;
 	
-	
+  	//the stroke width of the outline
+  	protected float outline = 2f;
   	
   	
   	//******CONSTRUCTORS******
@@ -170,7 +171,11 @@ public class Checkbox extends Widget
 	
 	
 	//******SET METHODS******
-    
+	public Checkbox setOutlineWidth(float o_width) {
+    	this.outline = o_width;
+    	return this;
+    }
+	
     public Checkbox setForegroundColor(int fg) {
     	this.foreground = fg;
     	return this;
@@ -601,14 +606,18 @@ public class Checkbox extends Widget
     	
     	if(this.visible) {
     		if(this.round) {
-    			this.REF.rect(this.positions[0], this.positions[1], this.sizes[0], this.sizes[1], 10);
+    			if(this.outline > 0) {
+    				this.REF.rect(this.positions[0], this.positions[1], this.sizes[0], this.sizes[1], 10);
+    			}
     			this.REF.fill(this.rendercolor);
-    			this.REF.rect(this.positions[0], this.positions[1], this.sizes[0]-this.sizes[0]/10, this.sizes[1]-this.sizes[1]/10,10);
+    			this.REF.rect(this.positions[0], this.positions[1], this.sizes[0]-(this.outline*2), this.sizes[1]-(this.outline*2), 5);
     		}
     		else {
-    			this.REF.rect(this.positions[0], this.positions[1], this.sizes[0], this.sizes[1]);
+    			if(this.outline > 0) {
+    				this.REF.rect(this.positions[0], this.positions[1], this.sizes[0], this.sizes[1]);
+    			}
     			this.REF.fill(this.rendercolor);
-    			this.REF.rect(this.positions[0], this.positions[1], this.sizes[0]-this.sizes[0]/10, this.sizes[1]-this.sizes[1]/10);
+    			this.REF.rect(this.positions[0], this.positions[1], this.sizes[0]-(this.outline*2), this.sizes[1]-(this.outline*2));
     			
     		}
     		
@@ -687,7 +696,7 @@ public class Checkbox extends Widget
 	    	    				this.REF.fill(this.ttforeground);
 	    	    				this.REF.textAlign(PConstants.CENTER, PConstants.CENTER);
 	    	    				this.REF.textSize(this.tooltiptextsize);
-	    	    				this.REF.text(this.tooltiptext, this.ttpositions[0]+this.tttextoffset[0], (this.ttpositions[1] - this.ttsizes[1]/20)+this.tttextoffset[1]);
+	    	    				this.REF.text(this.tooltiptext, this.ttpositions[0]+this.tttextoffset[0], (this.ttpositions[1] - this.ttsizes[1]/12)+this.tttextoffset[1]);
 	        				}
 	        			}
     				}

@@ -30,7 +30,8 @@ public class Button extends Widget
   	//offset the text in the button
   	protected float[] textoffset = {0f, 0f};
 	
-  	
+  	//the stroke width of the outline
+  	protected float outline = 2f;
   	
   	
   	//******CONSTRUCTORS******
@@ -298,6 +299,11 @@ public class Button extends Widget
     
     
     //******SET METHODS******
+    public Button setOutlineWidth(float o_width) {
+    	this.outline = o_width;
+    	return this;
+    }
+    
     
     public Button setForegroundColor(int fg) {
     	this.foreground = fg;
@@ -725,20 +731,24 @@ public class Button extends Widget
     
     	if(this.visible) {
     		if(this.round) {
-    			this.REF.rect(this.positions[0], this.positions[1], this.sizes[0], this.sizes[1], 10);
+    			if(this.outline > 0) {
+    				this.REF.rect(this.positions[0], this.positions[1], this.sizes[0], this.sizes[1], 10);
+    			}	
     			this.REF.fill(this.rendercolor);
-    			this.REF.rect(this.positions[0], this.positions[1], this.sizes[0]-this.sizes[1]/10, this.sizes[1]-this.sizes[1]/10,10);
+    			this.REF.rect(this.positions[0], this.positions[1], this.sizes[0]-(this.outline*2), this.sizes[1]-(this.outline*2) , 5);
     		}
     		else {
-    			this.REF.rect(this.positions[0], this.positions[1], this.sizes[0], this.sizes[1]);
+    			if(this.outline > 0) {
+    				this.REF.rect(this.positions[0], this.positions[1], this.sizes[0], this.sizes[1]);
+    			}
     			this.REF.fill(this.rendercolor);
-    			this.REF.rect(this.positions[0], this.positions[1], this.sizes[0]-this.sizes[1]/10, this.sizes[1]-this.sizes[1]/10);
+    			this.REF.rect(this.positions[0], this.positions[1], this.sizes[0]-(this.outline*2), this.sizes[1]-(this.outline*2));
     		}
     		this.REF.fill(this.foreground);
         	//this.REF.textAlign(PConstants.CENTER);
     		this.REF.textAlign(PConstants.CENTER, PConstants.CENTER);
         	this.REF.textSize(this.textSize);
-        	this.REF.text(this.text, this.positions[0]+this.textoffset[0], (this.positions[1] - this.sizes[1]/20)+this.textoffset[1]);
+        	this.REF.text(this.text, this.positions[0]+this.textoffset[0], (this.positions[1] - this.sizes[1]/12)+this.textoffset[1]);
     	}
     	
     	
@@ -795,7 +805,7 @@ public class Button extends Widget
 	    	    				this.REF.fill(this.ttforeground);
 	    	    				this.REF.textAlign(PConstants.CENTER, PConstants.CENTER);
 	    	    				this.REF.textSize(this.tooltiptextsize);
-	    	    				this.REF.text(this.tooltiptext, this.ttpositions[0]+this.tttextoffset[0], (this.ttpositions[1] - this.ttsizes[1]/20)+this.tttextoffset[1]);
+	    	    				this.REF.text(this.tooltiptext, this.ttpositions[0]+this.tttextoffset[0], (this.ttpositions[1] - this.ttsizes[1]/12)+this.tttextoffset[1]);
 	        				}
 	        			}
     				}

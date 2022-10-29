@@ -25,7 +25,8 @@ public class Label extends Widget
 	//offset the text in the label
   	protected float[] textoffset = {0f, 0f};
   	
-  	
+  	//the stroke width of the outline
+  	//protected float outline = 10f;
   	
   	
   	//******CONSTRUCTORS******
@@ -464,7 +465,7 @@ public class Label extends Widget
         	//this.REF.textAlign(PConstants.CENTER);
     		this.REF.textAlign(PConstants.CENTER, PConstants.CENTER);
         	this.REF.textSize(this.textSize);
-        	this.REF.text(this.text, this.positions[0]+this.textoffset[0], (this.positions[1] - this.sizes[1]/20)+this.textoffset[1]);
+        	this.REF.text(this.text, this.positions[0]+this.textoffset[0], (this.positions[1] - this.sizes[1]/12)+this.textoffset[1]);
     	}
     	
     	

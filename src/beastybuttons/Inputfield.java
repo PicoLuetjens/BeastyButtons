@@ -47,6 +47,9 @@ public class Inputfield extends Widget
   	//was the default set size or textsize from constructor overwritten? If so do not display any greyText anymore since the Widgets
   	//appereance has been completely changed
   	private boolean changed = false;
+  	
+  	//the stroke width of the outline
+  	protected float outline = 2f;
 	
 	//******CONSTRUCTORS******
 	
@@ -322,6 +325,10 @@ public class Inputfield extends Widget
 	
     
     //******SET METHODS******
+    public Inputfield setOutlineWidth(float o_width) {
+    	this.outline = o_width;
+    	return this;
+    }
     
     public Inputfield setForegroundColor(int fg) {
     	this.foreground = fg;
@@ -811,7 +818,9 @@ public class Inputfield extends Widget
     	
     	if(this.visible) {
     		if(this.round) {
-    			this.REF.rect(this.positions[0], this.positions[1], this.sizes[0], this.sizes[1], 10);
+    			if(this.outline > 0) {
+    				this.REF.rect(this.positions[0], this.positions[1], this.sizes[0], this.sizes[1], 10);
+    			}
     			if(this.input) {
     				this.rendercolor = this.input_color;
     			}
@@ -819,10 +828,12 @@ public class Inputfield extends Widget
     				this.rendercolor = this.background;
     			}
     			this.REF.fill(this.rendercolor);
-    			this.REF.rect(this.positions[0], this.positions[1], this.sizes[0]-this.sizes[1]/10, this.sizes[1]-this.sizes[1]/10,10);
+    			this.REF.rect(this.positions[0], this.positions[1], this.sizes[0]-(this.outline*2), this.sizes[1]-(this.outline*2), 5);
     		}
     		else {
-    			this.REF.rect(this.positions[0], this.positions[1], this.sizes[0], this.sizes[1]);
+    			if(this.outline > 0) {
+    				this.REF.rect(this.positions[0], this.positions[1], this.sizes[0], this.sizes[1]);
+    			}
     			if(this.input) {
     				this.rendercolor = this.input_color;
     			}
@@ -830,7 +841,7 @@ public class Inputfield extends Widget
     				this.rendercolor = this.background;
     			}
     			this.REF.fill(this.rendercolor);
-    			this.REF.rect(this.positions[0], this.positions[1], this.sizes[0]-this.sizes[1]/10, this.sizes[1]-this.sizes[1]/10);
+    			this.REF.rect(this.positions[0], this.positions[1], this.sizes[0]-(this.outline*2), this.sizes[1]-(this.outline*2));
     		}
     		
     		this.REF.fill(this.foreground);
@@ -842,7 +853,7 @@ public class Inputfield extends Widget
     		
         	//input text is given
         	if(this.input_text.length() > 0) {
-        		this.REF.text(this.input_text, this.positions[0]+this.textoffset[0], (this.positions[1] - this.sizes[1]/20)+this.textoffset[1]);
+        		this.REF.text(this.input_text, this.positions[0]+this.textoffset[0], (this.positions[1] - this.sizes[1]/12)+this.textoffset[1]);
         	}
         	
         	
@@ -851,7 +862,7 @@ public class Inputfield extends Widget
         	else {
         		if(!this.changed) {
         			this.REF.fill(this.gt_color);
-        			this.REF.text(this.greyText, this.positions[0]+this.textoffset[0], (this.positions[1] - this.sizes[1]/20)+this.textoffset[1]);
+        			this.REF.text(this.greyText, this.positions[0]+this.textoffset[0], (this.positions[1] - this.sizes[1]/12)+this.textoffset[1]);
         		}
         	}
         	
@@ -889,7 +900,7 @@ public class Inputfield extends Widget
 		    				this.REF.fill(this.ttforeground);
 		    				this.REF.textAlign(PConstants.CENTER, PConstants.CENTER);
 		    				this.REF.textSize(this.tooltiptextsize);
-		    				this.REF.text(this.tooltiptext, this.ttpositions[0]+this.tttextoffset[0], (this.ttpositions[1] - this.ttsizes[1]/20)+this.tttextoffset[1]);
+		    				this.REF.text(this.tooltiptext, this.ttpositions[0]+this.tttextoffset[0], (this.ttpositions[1] - this.ttsizes[1]/12)+this.tttextoffset[1]);
 	    				}
 	    				
 	    				//render loop depending on interval
@@ -909,7 +920,7 @@ public class Inputfield extends Widget
 	    	    				this.REF.fill(this.ttforeground);
 	    	    				this.REF.textAlign(PConstants.CENTER, PConstants.CENTER);
 	    	    				this.REF.textSize(this.tooltiptextsize);
-	    	    				this.REF.text(this.tooltiptext, this.ttpositions[0]+this.tttextoffset[0], (this.ttpositions[1] - this.ttsizes[1]/20)+this.tttextoffset[1]);
+	    	    				this.REF.text(this.tooltiptext, this.ttpositions[0]+this.tttextoffset[0], (this.ttpositions[1] - this.ttsizes[1]/12)+this.tttextoffset[1]);
 	        				}
 	        			}
     				}
