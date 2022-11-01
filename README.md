@@ -1,6 +1,6 @@
 # BeastyButtons Project
 
-<p align="center"><img src="Readme-Files/BeastyButtons Logo.png"></img></p>
+<p align="center"><img src="Readme-Files/Beastybuttons Logo.svg"></img></p>
 
 This is the repository of the BeastyButtons Library for the Java Version of [Processing]("https://processing.org/").
 This project is developed under the same license as the [official processing repository](https://github.com/processing/processing4).
