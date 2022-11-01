@@ -209,7 +209,7 @@ public class Checkbox extends Widget
 	}
     
     
-  //set the position of the button -> if tooltip is enabled you will need to re-set its position
+  //set the position of the checkbox -> if tooltip is enabled you will need to re-set its position
   	public Checkbox setPosition(float x, float y) {
   		this.positions[0] = x;
   		this.positions[1] = y;
@@ -580,9 +580,6 @@ public class Checkbox extends Widget
 	
 	
 	//******SELECT METHODS******
-    
-    //make this publicly accessible to get information about over position of the mouse even when the mouse handler is not registered, if you want
-    //to use this information in processing. Otherwise this is information is not accessible to the user -> works only with mouse
     
     @Override
     public boolean over(float mx, float my) {

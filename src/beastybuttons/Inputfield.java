@@ -129,7 +129,7 @@ public class Inputfield extends Widget
 	
 	//******CALLED FROM CONSTRUCTOR******
 	
-	//calculates the size of the Button(with multiple line support)
+	//calculates the size of the Inputfield(with multiple line support)
     private void calculateSize(String text) {
         float current_size = this.REF.g.textSize;
         String[] splits = text.split(this.line_separator);
@@ -377,7 +377,7 @@ public class Inputfield extends Widget
 			this.changed = true;
 			
 			if(update) {
-				//update the size of the button to fit
+				//update the size of the inputfield to fit
 				this.calculateSize(this.input_text);
 			}
     	}
@@ -405,7 +405,7 @@ public class Inputfield extends Widget
 	}
 	
 	
-	//set the position of the button -> if tooltip is enabled you will need to re-set its position
+	//set the position of the inputfield -> if tooltip is enabled you will need to re-set its position
 	public Inputfield setPosition(float x, float y) {
 		this.positions[0] = x;
 		this.positions[1] = y;
@@ -421,7 +421,7 @@ public class Inputfield extends Widget
 			this.positions[0] = this.REF.width - this.sizes[0]/2;
 		}
 		else {
-			throw new RuntimeException("not a valid input for setting the position of the button");
+			throw new RuntimeException("not a valid input for setting the position of the inputfield");
 		}
 		
 		if(b.equals("top")) {
@@ -431,7 +431,7 @@ public class Inputfield extends Widget
 			this.positions[1] = this.REF.height - this.sizes[1]/2;
 		}
 		else {
-			throw new RuntimeException("not a valid input for setting the position of the button");
+			throw new RuntimeException("not a valid input for setting the position of the inputfield");
 		}
 		this.calc_tt_auto_pos();
 		return this;
@@ -445,7 +445,7 @@ public class Inputfield extends Widget
 			this.positions[0] = this.REF.width - this.sizes[0]/2;
 		}
 		else {
-			throw new RuntimeException("not a valid input for setting the position of the button");
+			throw new RuntimeException("not a valid input for setting the position of the iputfield");
 		}
 		this.positions[1] = y;
 		this.calc_tt_auto_pos();
@@ -460,7 +460,7 @@ public class Inputfield extends Widget
 			this.positions[1] = this.REF.height - this.sizes[1]/2;
 		}
 		else {
-			throw new RuntimeException("not a valid input for setting the position of the button");
+			throw new RuntimeException("not a valid input for setting the position of the inputfield");
 		}
 		this.positions[0] = x;
 		this.calc_tt_auto_pos();
@@ -746,9 +746,6 @@ public class Inputfield extends Widget
     
     
     //******SELECT METHODS******
-    
-    //make this publicly accessible to get information about over position of the mouse even when the mouse handler is not registered, if you want
-    //to use this information in processing. Otherwise this is information is not accessible to the user -> works only with mouse
     
     @Override
     public boolean over(float mx, float my) {

@@ -93,7 +93,7 @@ public class Label extends Widget
 	
 	//******CALLED FROM CONSTRUCTOR******
 	
-	//calculates the size of the Button(with multiple line support)
+	//calculates the size of the Label(with multiple line support)
     private void calculateSize() {
         float current_size = this.REF.g.textSize;
         String[] splits = this.text.split(this.line_separator);
@@ -126,7 +126,7 @@ public class Label extends Widget
     }
 	
     
-    //calculates the textsize of the Button
+    //calculates the textsize of the Label
     private void calculatemaxsize() {
     	float current_size = this.REF.g.textSize;
     	String[] splits = this.text.split(this.line_separator);
@@ -227,7 +227,7 @@ public class Label extends Widget
 		this.text = text;
 		
 		if(update) {
-			//update the size of the button to fit
+			//update the size of the label to fit
 			this.calculateSize();
 		}
 		return this;
@@ -237,7 +237,7 @@ public class Label extends Widget
 		this.textSize = textSize;
 		
 		if(update) {
-			//update the size of the button to fit
+			//update the size of the label to fit
 			this.calculateSize();
 		}
 		return this;
@@ -255,7 +255,7 @@ public class Label extends Widget
 	}
 	
 	
-	//set the position of the button -> if tooltip is enabled you will need to re-set its position
+	//set the position of the label -> if tooltip is enabled you will need to re-set its position
 	public Label setPosition(float x, float y) {
 		this.positions[0] = x;
 		this.positions[1] = y;
@@ -422,9 +422,6 @@ public class Label extends Widget
   	
   	
   	//******SELECT METHODS******
-    
-    //make this publicly accessible to get information about over position of the mouse even when the mouse handler is not registered, if you want
-    //to use this information in processing. Otherwise this is information is not accessible to the user -> works only with mouse
     
     @Override
     public boolean over(float mx, float my) {

@@ -597,9 +597,6 @@ public class BB_Image extends Widget
     
     //******SELECT METHODS******
     
-    //make this publicly accessible to get information about over position of the mouse even when the mouse handler is not registered, if you want
-    //to use this information in processing. Otherwise this is information is not accessible to the user -> works only with mouse
-    
     @Override
     public boolean over(float mx, float my) {
     	if(mx >= this.positions[0]-this.sizes[0]/2 && mx <= this.positions[0]+this.sizes[0]/2)

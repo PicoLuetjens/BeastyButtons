@@ -169,7 +169,7 @@ public class BB_Table extends Widget
         this.SOURCEPATH = this.ID;
     }
     
-    //calculates the size of the Button(with multiple line support)
+    //calculates the size of the Table(with multiple line support)
     @NotImplementedYet
     private float[] calculateSize(String text) {
         float current_size = this.REF.g.textSize;
@@ -739,10 +739,8 @@ public class BB_Table extends Widget
         }
     }
     
-    //******SELECT METHODS******
     
-    //make this publicly accessible to get information about over position of the mouse even when the mouse handler is not registered, if you want
-    //to use this information in processing. Otherwise this is information is not accessible to the user -> works only with mouse
+    //******SELECT METHODS******
     
     @Override
     public boolean over(float mx, float my) {

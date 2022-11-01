@@ -1327,6 +1327,7 @@ public class BeastyWorld
 									round = "false";
 								}
 								widget_surface_exp_tag.addChild("round").setContent(round);
+								widget_surface_exp_tag.addChild("outline").setContent(Float.toString(bu.outline));
 								widget_surface_exp_tag.addChild("text").setContent(bu.text);
 								widget_surface_exp_tag.addChild("textsize").setContent(Float.toString(bu.textSize));
 								String hotkey = "-1";
@@ -1443,6 +1444,7 @@ public class BeastyWorld
 									round = "false";
 								}
 								widget_surface_exp_tag.addChild("round").setContent(round);
+								widget_surface_exp_tag.addChild("outline").setContent(Float.toString(c.outline));
 								String hotkey = "-1";
 								if(c.hotkey > -1) {
 									hotkey = Integer.toString(c.hotkey);
@@ -1605,6 +1607,7 @@ public class BeastyWorld
 									round = "false";
 								}
 								widget_surface_exp_tag.addChild("round").setContent(round);
+								widget_surface_exp_tag.addChild("outline").setContent(Float.toString(i.outline));
 								widget_surface_exp_tag.addChild("inputtext").setContent(i.input_text);
 								widget_surface_exp_tag.addChild("greyedtext").setContent(i.greyText);
 								widget_surface_exp_tag.addChild("textsize").setContent(Float.toString(i.textSize));

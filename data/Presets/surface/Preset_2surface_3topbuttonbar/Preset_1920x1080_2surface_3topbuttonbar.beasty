@@ -49,6 +49,7 @@
           <xsize>640.0</xsize>
           <ysize>108.0</ysize>
           <round>false</round>
+	  <outline>2.0</outline>
           <text>button1</text>
           <textsize>65.21739</textsize>
           <hotkey>-1</hotkey>
@@ -90,6 +91,7 @@
           <xsize>640.0</xsize>
           <ysize>108.0</ysize>
           <round>false</round>
+	  <outline>2.0</outline>
           <text>button2</text>
           <textsize>65.21739</textsize>
           <hotkey>-1</hotkey>
@@ -131,6 +133,7 @@
           <xsize>640.0</xsize>
           <ysize>108.0</ysize>
           <round>false</round>
+	  <outline>2.0</outline>
           <text>button3</text>
           <textsize>65.21739</textsize>
           <hotkey>-1</hotkey>
@@ -189,6 +192,7 @@
           <xsize>640.0</xsize>
           <ysize>108.0</ysize>
           <round>false</round>
+	  <outline>2.0</outline>
           <text>button1</text>
           <textsize>65.21739</textsize>
           <hotkey>-1</hotkey>
@@ -230,6 +234,7 @@
           <xsize>640.0</xsize>
           <ysize>108.0</ysize>
           <round>false</round>
+	  <outline>2.0</outline>
           <text>button2</text>
           <textsize>65.21739</textsize>
           <hotkey>-1</hotkey>
@@ -271,6 +276,7 @@
           <xsize>640.0</xsize>
           <ysize>108.0</ysize>
           <round>false</round>
+	  <outline>2.0</outline>
           <text>button3</text>
           <textsize>65.21739</textsize>
           <hotkey>-1</hotkey>

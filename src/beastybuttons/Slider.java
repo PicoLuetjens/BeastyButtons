@@ -262,7 +262,7 @@ public class Slider extends Widget
 			this.positions[0] = this.REF.width - this.sizes[0]/2;
 		}
 		else {
-			throw new RuntimeException("not a valid input for setting the position of the button");
+			throw new RuntimeException("not a valid input for setting the position of the slider");
 		}
 		
 		if(b.equals("top")) {
@@ -272,7 +272,7 @@ public class Slider extends Widget
 			this.positions[1] = this.REF.height - this.sizes[1]/2;
 		}
 		else {
-			throw new RuntimeException("not a valid input for setting the position of the button");
+			throw new RuntimeException("not a valid input for setting the position of the slider");
 		}
 		this.calc_tt_auto_pos();
 		return this;
@@ -286,7 +286,7 @@ public class Slider extends Widget
 			this.positions[0] = this.REF.width - this.sizes[0]/2;
 		}
 		else {
-			throw new RuntimeException("not a valid input for setting the position of the button");
+			throw new RuntimeException("not a valid input for setting the position of the slider");
 		}
 		this.positions[1] = y;
 		this.calc_tt_auto_pos();
@@ -301,7 +301,7 @@ public class Slider extends Widget
 			this.positions[1] = this.REF.height - this.sizes[1]/2;
 		}
 		else {
-			throw new RuntimeException("not a valid input for setting the position of the button");
+			throw new RuntimeException("not a valid input for setting the position of the slider");
 		}
 		this.positions[0] = x;
 		this.calc_tt_auto_pos();
@@ -559,9 +559,6 @@ public class Slider extends Widget
     
     
     //******SELECT METHODS******
-    
-    //make this publicly accessible to get information about over position of the mouse even when the mouse handler is not registered, if you want
-    //to use this information in processing. Otherwise this is information is not accessible to the user -> works only with mouse
     
     @Override
     public boolean over(float mx, float my) {
