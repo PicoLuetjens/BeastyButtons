@@ -206,6 +206,30 @@ public class Label extends Widget
     
     
     //******SET METHODS******
+    public Label copySettings(Label b) {
+    	this.positions[0] = b.positions[0];
+    	this.positions[1] = b.positions[1];
+    	
+    	this.sizes[0] = b.sizes[0];
+    	this.sizes[1] = b.sizes[1];
+    	
+    	this.round = b.round;
+    	
+    	this.text = b.text;
+    	this.textSize = b.textSize;
+    	
+    	this.textoffset[0] = b.textoffset[0];
+    	this.textoffset[1] = b.textoffset[1];
+    	
+    	this.background = b.background;
+    	this.foreground = b.foreground;
+    
+    	this.visible = b.visible;
+    	
+    	this.LAYER = b.LAYER;
+    	
+    	return this;
+    }
     
     public Label setForegroundColor(int fg) {
     	this.foreground = fg;
@@ -361,25 +385,6 @@ public class Label extends Widget
     	this.textoffset[1] = y;
     	return this;
     }
-    
-    
-    public Label copySettings(Label l) {
-    	
-    	this.text = l.text;
-		this.textSize = l.textSize;
-		this.round = l.round;
-		this.textoffset = l.textoffset;
-		this.visible = l.visible;
-		this.LAYER = l.LAYER;
-		this.positions = l.positions;
-		this.sizes = l.sizes;
-		this.rendercolor = l.rendercolor;
-		this.background = l.background;
-		this.foreground = l.foreground;
-    	
-    	return this;
-    }
-    
     
     
     //******GET METHODS******

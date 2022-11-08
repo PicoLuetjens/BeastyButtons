@@ -1,7 +1,6 @@
 # BeastyButtons Project
 
-<p align="center"><img src="Readme-Files/Beastybuttons Logo.svg"></img></p>
-
+<p align="center"><img src="Readme-Files/BeastyButtons Logo.svg"></img></p>
 This is the repository of the BeastyButtons Library for the Java Version of [Processing]("https://processing.org/").
 This project is developed under the same license as the [official processing repository](https://github.com/processing/processing4).
 
@@ -35,6 +34,7 @@ That includes setting costum images as well as using import/export and using the
 # Bugs
 - tabswitch handler currently does not work
 - importing files throws an error
+- BB_Image copySettings() has some weird behaviour with image crops, for now crops have to be set individually
 
 # Future Features (next Version update)
 - linking to a widget by its sourcepath
@@ -45,5 +45,7 @@ That includes setting costum images as well as using import/export and using the
 # Future Future Features (further version update)
 - new widgets: BB_Table, Dropdownlist, Slider, Radiobutton, Coordinatesystem
 - auto scale new imports if the sketch size does not match up
+- virtual keyboard for inputfields with the mousehandler
+- individual costum font rendering for each Widget
 
 > current operating version: v1.0

@@ -299,6 +299,42 @@ public class Button extends Widget
     
     
     //******SET METHODS******
+    public Button copySettings(Button b) {
+    	this.positions[0] = b.positions[0];
+    	this.positions[1] = b.positions[1];
+    	
+    	this.sizes[0] = b.sizes[0];
+    	this.sizes[1] = b.sizes[1];
+    	
+    	this.round = b.round;
+    	
+    	this.text = b.text;
+    	this.textSize = b.textSize;
+    	
+    	this.hotkey = b.hotkey;
+    	
+    	this.textoffset[0] = b.textoffset[0];
+    	this.textoffset[1] = b.textoffset[1];
+    	
+    	this.background = b.background;
+    	this.foreground = b.foreground;
+    	this.overcolor = b.overcolor;
+    	this.clickcolor = b.clickcolor;
+    	
+    	this.active = b.active;
+    	this.visible = b.visible;
+    	
+    	this.LAYER = b.LAYER;
+    	
+    	this.olc = b.olc;
+    	this.omc = b.omc;
+    	this.orc = b.orc;
+    	
+    	this.outline = b.outline;
+    	
+    	return this;
+    }
+    
     public Button setOutlineWidth(float o_width) {
     	this.outline = o_width;
     	return this;

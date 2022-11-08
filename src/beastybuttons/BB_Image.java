@@ -1,6 +1,7 @@
 package beastybuttons;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import processing.core.*;
 
@@ -22,6 +23,9 @@ public class BB_Image extends Widget
 	//saved crops for exporting
 	ArrayList<Crop> crops = new ArrayList<>();
 	
+	// the scaled size of the image without the calculation of the crops
+	float[] scale_img_size = {0, 0};
+	
 	
 	//******CONSTRUCTORS******
 	
@@ -33,6 +37,8 @@ public class BB_Image extends Widget
 		this.sizes[1] = this.IMG.height;
 		this.generateColors();
 		this.generateID();
+		this.scale_img_size[0] = this.sizes[0];
+		this.scale_img_size[1] = this.sizes[1];
 	}
 	
 	//import constructor
@@ -145,6 +151,34 @@ public class BB_Image extends Widget
     
     
     //******SET METHODS******
+    @Experimental
+    @SuppressWarnings("unchecked")
+	public BB_Image copySettings(BB_Image b) {
+    	this.positions[0] = b.positions[0];
+    	this.positions[1] = b.positions[1];
+    	
+    	this.IMG = b.IMG;
+    	this.imgpath = b.imgpath;
+    	
+    	this.sizes[0] = b.scale_img_size[0];
+    	this.sizes[1] = b.scale_img_size[1];
+
+    	this.crops.clear();
+    	//ArrayList<Crop> othercrops = (ArrayList<Crop>) Collections.synchronizedList(b.crops);
+    	if(b.crops.size()> 0) {
+	    	for(Crop cr : b.crops) {
+	    		this.addCrop(cr.edge, cr.pixel_amount);
+	    	}
+	    	this.executeCrops();
+    	}
+    	
+    	this.active = b.active;
+    	this.visible = b.visible;
+    	
+    	this.LAYER = b.LAYER;
+    	
+    	return this;
+    }
     
     public BB_Image setImage(PImage img) {
     	this.IMG = img;
@@ -163,6 +197,8 @@ public class BB_Image extends Widget
     public BB_Image setScaleFactor(float factorx, float factory) {
     	this.sizes[0] = this.sizes[0]*factorx;
     	this.sizes[1] = this.sizes[1]*factory;
+    	this.scale_img_size[0] = this.scale_img_size[0]*factorx;
+    	this.scale_img_size[1] = this.scale_img_size[1]*factory;
     	return this;
     }
     
@@ -293,6 +329,133 @@ public class BB_Image extends Widget
     	return this;
     }
     
+    // method overload for internal use
+    protected BB_Image cropImage(String edge, int pixel_amount, boolean addcrop) {
+    	if(addcrop) {
+    		this.crops.add(new Crop(edge, pixel_amount));
+    	}
+    	PImage newimg;
+    	float pixel_size;
+    	float pixel_amount_size;
+    	float new_size;
+    	
+    	if(edge.equals("left")) {
+    		if(pixel_amount > 0 && pixel_amount < this.IMG.width) {
+    			newimg = this.REF.createImage(this.IMG.width-pixel_amount, this.IMG.height, PConstants.RGB);
+    			
+    			pixel_size = this.sizes[0]/(float)this.IMG.width;
+    			pixel_amount_size = pixel_size*(float)pixel_amount;
+    			new_size = this.sizes[0]-pixel_amount_size;
+    			this.IMG = this.IMG.get(pixel_amount, 0, this.IMG.width, this.IMG.height);
+    			
+    			
+    			this.REF.loadPixels();
+    			int skip_amount = 0;
+    			for(int i = 0; i < this.IMG.pixels.length; i++) {
+    				if(this.REF.alpha(this.IMG.pixels[i]) > 0) {
+    					newimg.pixels[i-skip_amount] = this.IMG.pixels[i];
+    				}
+    				else {
+    					skip_amount+=1;
+    				}
+    			}
+    			this.IMG = newimg;
+    			this.REF.updatePixels();
+    			this.sizes[0] = new_size;
+    		}
+    		else {
+    			throw new RuntimeException("Crop amount out of bounds");
+    		}
+    	}
+    	else if(edge.equals("right")) {
+    		if(pixel_amount > 0 && pixel_amount < this.IMG.width) {
+    			newimg = this.REF.createImage(this.IMG.width-pixel_amount, this.IMG.height, PConstants.RGB);
+    			
+    			pixel_size = this.sizes[0]/(float)this.IMG.width;
+    			pixel_amount_size = pixel_size*(float)pixel_amount;
+    			new_size = this.sizes[0]-pixel_amount_size;
+    			this.IMG = this.IMG.get(0, 0, this.IMG.width-pixel_amount, this.IMG.height);
+    			
+    			
+    			this.REF.loadPixels();
+    			int skip_amount = 0;
+    			for(int i = 0; i < this.IMG.pixels.length; i++) {
+    				if(this.REF.alpha(this.IMG.pixels[i]) > 0) {
+    					newimg.pixels[i-skip_amount] = this.IMG.pixels[i];
+    				}
+    				else {
+    					skip_amount+=1;
+    				}
+    			}
+    			this.IMG = newimg;
+    			this.REF.updatePixels();
+    			this.sizes[0] = new_size;
+    		}
+    		else {
+    			throw new RuntimeException("Crop amount out of bounds");
+    		}
+    	}
+    	else if(edge.equals("top")) {
+    		if(pixel_amount > 0 && pixel_amount < this.IMG.height) {
+    			newimg = this.REF.createImage(this.IMG.width, this.IMG.height-pixel_amount, PConstants.RGB);
+    			
+    			pixel_size = this.sizes[1]/(float)this.IMG.height;
+    			pixel_amount_size = pixel_size*(float)pixel_amount;
+    			new_size = this.sizes[1]-pixel_amount_size;
+    			this.IMG = this.IMG.get(0, pixel_amount, this.IMG.width, this.IMG.height);
+    			
+    			
+    			this.REF.loadPixels();
+    			int skip_amount = 0;
+    			for(int i = 0; i < this.IMG.pixels.length; i++) {
+    				if(this.REF.alpha(this.IMG.pixels[i]) > 0) {
+    					newimg.pixels[i-skip_amount] = this.IMG.pixels[i];
+    				}
+    				else {
+    					skip_amount+=1;
+    				}
+    			}
+    			this.IMG = newimg;
+    			this.REF.updatePixels();
+    			this.sizes[1] = new_size;
+    		}
+    		else {
+    			throw new RuntimeException("Crop amount out of bounds");
+    		}
+    	}
+    	else if(edge.equals("bottom")) {
+    		if(pixel_amount > 0 && pixel_amount < this.IMG.height) {
+    			newimg = this.REF.createImage(this.IMG.width, this.IMG.height-pixel_amount, PConstants.RGB);
+    			
+    			pixel_size = this.sizes[1]/(float)this.IMG.height;
+    			pixel_amount_size = pixel_size*(float)pixel_amount;
+    			new_size = this.sizes[1]-pixel_amount_size;
+    			this.IMG = this.IMG.get(0, 0, this.IMG.width, this.IMG.height-pixel_amount);
+    			
+    			
+    			this.REF.loadPixels();
+    			int skip_amount = 0;
+    			for(int i = 0; i < this.IMG.pixels.length; i++) {
+    				if(this.REF.alpha(this.IMG.pixels[i]) > 0) {
+    					newimg.pixels[i-skip_amount] = this.IMG.pixels[i];
+    				}
+    				else {
+    					skip_amount+=1;
+    				}
+    			}
+    			this.IMG = newimg;
+    			this.REF.updatePixels();
+    			this.sizes[1] = new_size;
+    		}
+    		else {
+    			throw new RuntimeException("Crop amount out of bounds");
+    		}
+    	}
+    	else {
+    		PApplet.println("WARNING(BB): UNKNOWN INPUT FOR CROPIMAGE() -> CONTINUEING WITHOUT CROPPING THE IMAGE");
+    	}
+    	return this;
+    }
     
   
   	public BB_Image setPosition(float x, float y) {
@@ -402,8 +565,10 @@ public class BB_Image extends Widget
   	
   	//called when imported to execute the saved crops to get the resulting export image
   	protected void executeCrops() {
-  		for(Crop c : this.crops) {
-  			this.cropImage(c.edge, c.pixel_amount);
+  		if(this.crops.size() > 0) {
+	  		for(Crop c : this.crops) {
+	  			this.cropImage(c.edge, c.pixel_amount, false);
+	  		}
   		}
   	}
   	
@@ -414,13 +579,6 @@ public class BB_Image extends Widget
   	protected ArrayList<Crop> getCrops(){
   		return this.crops;
   	}
-  	
-  	public BB_Image copySettings(BB_Image img) {
-  		
-  		
-  		return this;
-  	}
-  	
   	
   	
   	//******GET METHODS******

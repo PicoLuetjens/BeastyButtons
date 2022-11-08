@@ -171,6 +171,37 @@ public class Checkbox extends Widget
 	
 	
 	//******SET METHODS******
+	public Checkbox copySettings(Checkbox b) {
+    	this.positions[0] = b.positions[0];
+    	this.positions[1] = b.positions[1];
+    	
+    	this.sizes[0] = b.sizes[0];
+    	this.sizes[1] = b.sizes[1];
+    	
+    	this.round = b.round;
+    	
+    	this.hotkey = b.hotkey;
+    	
+    	this.CHECKTYPE = b.CHECKTYPE;
+    	
+    	this.background = b.background;
+    	this.foreground = b.foreground;
+    	this.overcolor = b.overcolor;
+    	this.clickcolor = b.clickcolor;
+    	
+    	this.active = b.active;
+    	this.visible = b.visible;
+    	
+    	this.LAYER = b.LAYER;
+    	
+    	this.oc = b.oc;
+    	this.ou = b.ou;
+    	
+    	this.outline = b.outline;
+    	
+    	return this;
+    }
+	
 	public Checkbox setOutlineWidth(float o_width) {
     	this.outline = o_width;
     	return this;
@@ -324,38 +355,6 @@ public class Checkbox extends Widget
 		else {
 			throw new RuntimeException("sourcepath error - could not update the sourcepath");
 		}
-	}
-	
-	//copy everything by value, except hotkey, on check/uncheck methods, id, sourcepath, already_added, PApplet ref, timestep, selector_off_element, 
-	//clickssincestart, tab_selected, line_separator adn instance value
-	
-	public Checkbox copySettings(Checkbox c) {
-		
-		this.round = c.round;
-		this.CHECKTYPE = c.CHECKTYPE;
-		this.active = c.active;
-		this.visible = c.visible;
-		this.LAYER = c.LAYER;
-		this.positions = c.positions;
-		this.sizes = c.sizes;
-		this.ttsizes = c.ttsizes;
-		this.ttpositions = c.ttpositions;
-		this.rendercolor = c.rendercolor;
-		this.background = c.background;
-		this.foreground = c.foreground;
-		this.overcolor = c.overcolor;
-		this.clickcolor = c.clickcolor;
-		this.ttbackground = c.ttbackground;
-		this.ttforeground = c.ttforeground;
-		this.tooltiptext = c.tooltiptext;
-		this.tooltiptextsize = c.tooltiptextsize;
-		this.tttextoffset = c.tttextoffset;
-		this.tooltip_enabled = c.tooltip_enabled;
-		this.enable_intervall = c.enable_intervall;
-		this.intervall = c.intervall;
-		this.roundtt = c.roundtt;
-		
-		return this;
 	}
 	
 	public Checkbox setChecktype(String s) {

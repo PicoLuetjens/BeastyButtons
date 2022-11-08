@@ -352,12 +352,14 @@ public class BeastyWorld
 		return this;
 	}
 	
-	
-	@Experimental
+	@NoDocumentation
 	public BeastyWorld removeWidget(Widget w) {
 		if(this.MODE == WidgetMode.WIDGET) {
 			if(this.widgets.size() > 0) {
 				this.widgets.remove(w);
+				w.already_added = false;
+				//edit the sourcePath
+				w.editSourcepath("delete", this.ID);
 				if(this.widgets.size() > 0) {
 					this.tabswitchlist.clear();
 					this.generate_tabswitchlist();
@@ -373,11 +375,24 @@ public class BeastyWorld
 		return this;
 	}
 	
-	@Experimental
+	
+	//when the renderpage is the same as the removed surface, the last surface in the list becomes the new renderpage
+	@NoDocumentation
 	public BeastyWorld removeSurface(BeastySurface s) {
 		if(this.MODE == WidgetMode.SURFACE) {
 			if(this.surfaces.size() > 0) {
 				this.surfaces.remove(s);
+				for(Widget w : s.widgets) {
+					w.SOURCEPATH = w.SOURCEPATH.replace(this.ID + "/", "");
+				}
+				s.editSourcePath("delete", this.ID);
+				if(this.surfaces.size() > 0) {
+					this.renderpage = this.surfaces.get(this.surfaces.size()-1);
+				}
+				else {
+					this.renderpage = null;
+					throw new RuntimeException("there are no more surfaces to render after surface was removed, there has to be at least one in surface mode");
+				}
 			}
 			else {
 				PApplet.println("WARNING(BB): NO SURFACE FOUND TO REMOVE");
@@ -389,10 +404,9 @@ public class BeastyWorld
 		return this;
 	}
 	
-	
-	@Experimental
+	@NoDocumentation
 	public BeastyWorld enableonLayer(int layer) {
-		if(layer <= BeastyWorld.LAYERS && layer >= 0) {
+		if(layer < 0 || layer > BeastyWorld.LAYERS) {
 			throw new RuntimeException("given layer is out of bounds");
 		}
 		if(this.MODE == WidgetMode.WIDGET) {
@@ -411,10 +425,9 @@ public class BeastyWorld
 		return this;
 	}
 	
-	
-	@Experimental
+	@NoDocumentation
 	public BeastyWorld disableonLayer(int layer) {
-		if(layer <= BeastyWorld.LAYERS && layer >= 0) {
+		if(layer < 0 || layer > BeastyWorld.LAYERS) {
 			throw new RuntimeException("given layer is out of bounds");
 		}
 		if(this.MODE == WidgetMode.WIDGET) {
@@ -435,9 +448,9 @@ public class BeastyWorld
 	
 	
 	//******GET METHODS******
-	/*
-	public Widget get_Widget_by_path(String path) {
-		
+	
+	
+	public Widget get_widget_by_path(String path) {	
 		//located in a surface instance?("worldID/surfaceID/widgetID")
 		if(path.split("/").length == 3){
 			for(BeastySurface s : this.surfaces) {
@@ -451,10 +464,10 @@ public class BeastyWorld
 						}
 						//else if(w instanceof Dropdownlist) {
 							//return (Dropdownlist)w;
-						}
+						//}
 						//else if(w instanceof Coordinatesystem) {
 							//return (Coordinatesystem)w;
-						}
+						//}
 						else if(w instanceof BB_Image) {
 							return (BB_Image)w;
 						}
@@ -464,21 +477,18 @@ public class BeastyWorld
 						else if(w instanceof Label) {
 							return (Label)w;
 						}
-						else if(w instanceof Radiobutton) {
-							return (Radiobutton)w;
-						}
-						else if(w instanceof Slider) {
-							return (Slider)w;
-						}
-						else if(w instanceof BB_Table) {
-							return (BB_Table)w;
-						}
-						else {
-							throw new RuntimeException("Could not cast the Widget to a specific type");
-						}
+						//else if(w instanceof Radiobutton) {
+							//return (Radiobutton)w;
+						//}
+						//else if(w instanceof Slider) {
+							//return (Slider)w;
+						//}
+						//else if(w instanceof BB_Table) {
+							//return (BB_Table)w;
+						//}
 					}
 				}
-				throw new RuntimeException("No match for the given Path");
+				//throw new RuntimeException("No match for the given Path");
 			}
 		}
 		else if(path.split("/").length == 2){
@@ -490,12 +500,12 @@ public class BeastyWorld
 					else if(w instanceof Checkbox) {
 						return (Checkbox)w;
 					}
-					else if(w instanceof Dropdownlist) {
-						return (Dropdownlist)w;
-					}
-					else if(w instanceof Coordinatesystem) {
-						return (Coordinatesystem)w;
-					}
+					//else if(w instanceof Dropdownlist) {
+						//return (Dropdownlist)w;
+					//}
+					//else if(w instanceof Coordinatesystem) {
+						//return (Coordinatesystem)w;
+					//}
 					else if(w instanceof BB_Image) {
 						return (BB_Image)w;
 					}
@@ -505,116 +515,113 @@ public class BeastyWorld
 					else if(w instanceof Label) {
 						return (Label)w;
 					}
-					else if(w instanceof Radiobutton) {
-						return (Radiobutton)w;
-					}
-					else if(w instanceof Slider){
-						return (Slider)w;
-					}
-					else if(w instanceof BB_Table) {
-						return (BB_Table)w;
-					}
-					else {
-						throw new RuntimeException("Could not cast the Widget to a specific type");
-					}
+					//else if(w instanceof Radiobutton) {
+						//return (Radiobutton)w;
+					//}
+					//else if(w instanceof Slider){
+						//return (Slider)w;
+					//}
+					//else if(w instanceof BB_Table) {
+						//return (BB_Table)w;
+					//}
 				}
 			}
-			throw new RuntimeException("No match for the given Path");
 		}
+		throw new RuntimeException("No match for the given Path");
+	}
 		
-		*/
-		public Widget get_widget_by_id(String id){
-			for(Widget w : this.widgets) {
-				if(w.ID.equals(id)) {
-					if(w instanceof Button) {
-						return (Button)w;
-					}
-					else if(w instanceof Checkbox) {
-						return (Checkbox)w;
-					}
-					//else if(w instanceof Dropdownlist) {
-						//return (Dropdownlist)w;
-					//}
-					//else if(w instanceof Coordinatesystem) {
-						//return (Coordinatesystem)w;
-					//}
-					else if(w instanceof BB_Image) {
-						return (BB_Image)w;
-					}
-					else if(w instanceof Inputfield) {
-						return (Inputfield)w;
-					}
-					else if(w instanceof Label) {
-						return (Label)w;
-					}
-					//else if(w instanceof Radiobutton) {
-						//return (Radiobutton)w;
-					//}
-					//else if(w instanceof Slider){
-						//return (Slider)w;
-					//}
-					//else if(w instanceof BB_Table) {
-						//return (BB_Table)w;
-					//}
-					else {
-						throw new RuntimeException("Could not cast the Widget to a specific type");
-					}
-				}
+		
+	public BeastySurface get_surface_by_path(String path){
+		for(BeastySurface s : this.surfaces) {
+			if(s.SOURCEPATH.equals(path)) {
+				return s;
 			}
-			for(BeastySurface s : this.surfaces) {
-				for(Widget w : s.widgets) {
-					if(w instanceof Button) {
-						return (Button)w;
-					}
-					else if(w instanceof Checkbox) {
-						return (Checkbox)w;
-					}
-					//else if(w instanceof Dropdownlist) {
-						//return (Dropdownlist)w;
-					//}
-					//else if(w instanceof Coordinatesystem) {
-						//return (Coordinatesystem)w;
-					//}
-					else if(w instanceof BB_Image) {
-						return (BB_Image)w;
-					}
-					else if(w instanceof Inputfield) {
-						return (Inputfield)w;
-					}
-					else if(w instanceof Label) {
-						return (Label)w;
-					}
-					//else if(w instanceof Radiobutton) {
-						//return (Radiobutton)w;
-					//}
-					//else if(w instanceof Slider){
-						//return (Slider)w;
-					//}
-					//else if(w instanceof BB_Table) {
-						//return (BB_Table)w;
-					//}
-					else {
-						throw new RuntimeException("Could not cast the Widget to a specific type");
-					}
-				}
-			}
-			throw new RuntimeException("No match for the given ID");
 		}
-	
-	
-	
-	/*
-	@Experimental
-	public BeastyWorld get_surface_by_path(String path){
-		return this;
+		throw new RuntimeException("No match for the given Path");
 	}
 	
-	@Experimental
-	public BeastyWorld get_surface_by_id(String id){
-		return this;
+		
+	public BeastySurface get_surface_by_id(String id) {
+		for(BeastySurface s : this.surfaces) {
+			if(s.ID.equals(id)) {
+				return s;
+			}
+		}
+		throw new RuntimeException("No match for the given ID");
 	}
+
 	
-	*/
+	public Widget get_widget_by_id(String id){
+		for(Widget w : this.widgets) {
+			if(w.ID.equals(id)) {
+				if(w instanceof Button) {
+					return (Button)w;
+				}
+				else if(w instanceof Checkbox) {
+					return (Checkbox)w;
+				}
+				//else if(w instanceof Dropdownlist) {
+					//return (Dropdownlist)w;
+				//}
+				//else if(w instanceof Coordinatesystem) {
+					//return (Coordinatesystem)w;
+				//}
+				else if(w instanceof BB_Image) {
+					return (BB_Image)w;
+				}
+				else if(w instanceof Inputfield) {
+					return (Inputfield)w;
+				}
+				else if(w instanceof Label) {
+					return (Label)w;
+				}
+				//else if(w instanceof Radiobutton) {
+					//return (Radiobutton)w;
+				//}
+				//else if(w instanceof Slider){
+					//return (Slider)w;
+				//}
+				//else if(w instanceof BB_Table) {
+					//return (BB_Table)w;
+				//}
+			}
+		}
+		for(BeastySurface s : this.surfaces) {
+			for(Widget w : s.widgets) {
+				if(w instanceof Button) {
+					return (Button)w;
+				}
+				else if(w instanceof Checkbox) {
+					return (Checkbox)w;
+				}
+				//else if(w instanceof Dropdownlist) {
+					//return (Dropdownlist)w;
+				//}
+				//else if(w instanceof Coordinatesystem) {
+					//return (Coordinatesystem)w;
+				//}
+				else if(w instanceof BB_Image) {
+					return (BB_Image)w;
+				}
+				else if(w instanceof Inputfield) {
+					return (Inputfield)w;
+				}
+				else if(w instanceof Label) {
+					return (Label)w;
+				}
+				//else if(w instanceof Radiobutton) {
+					//return (Radiobutton)w;
+				//}
+				//else if(w instanceof Slider){
+					//return (Slider)w;
+				//}
+				//else if(w instanceof BB_Table) {
+					//return (BB_Table)w;
+				//}
+			}
+		}
+		throw new RuntimeException("No match for the given ID");
+	}
 	
 	public ArrayList<Widget> getWidgetList(){
 		return this.widgets;
@@ -2989,6 +2996,15 @@ public class BeastyWorld
 	
 	//******TRANSITION METHODS******
 	
+	//get the id of the renderpage at the moment of calling this method
+	@Experimental
+	public String get_renderpage_id() {
+		if(this.MODE == WidgetMode.SURFACE) {
+			return this.renderpage.ID;
+		}
+		throw new RuntimeException("renderpage is not supported in Widgetmode");
+	}
+	
 	//jump cut to another surface
 	public void surface_jump_transition(String targetsurfaceID) {
 		if(this.MODE == WidgetMode.SURFACE) {
@@ -3010,6 +3026,7 @@ public class BeastyWorld
 	
 	
 	//opacity cut to another surface
+	@NoDocumentation
 	@NotImplementedYet
 	@Experimental
 	public void surface_opacity_transition(String targetsurfaceID, float operatingtime) {
@@ -3030,6 +3047,7 @@ public class BeastyWorld
 	
 	
 	//swipe cut to another surface
+	@NoDocumentation
 	@NotImplementedYet
 	@Experimental
 	public void surface_swipe_transition(String targetsurfaceID, float operatingtime, String direction){

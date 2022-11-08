@@ -89,6 +89,21 @@ public class BeastySurface
 	
 	
 	//******SET METHODS******
+	public BeastySurface copySettings(BeastySurface s) {
+		
+		this.posx = s.posx;
+		this.posy = s.posy;
+		
+		this.backgroundcolor = s.backgroundcolor;
+		this.backgroundimg = s.backgroundimg;
+		this.imgpath = s.imgpath;
+		this.stretch_backgroundimg = s.stretch_backgroundimg;
+		
+		this.offsetx = s.offsetx;
+		this.offsety = s.offsety;
+		
+		return this;
+	}
 	
 	//edits the SOURCEPATH of this instance(called from top class)
 	protected void editSourcePath(String action, String id) {
@@ -180,10 +195,9 @@ public class BeastySurface
 		return this;
 	}
 	
-	
-	@Experimental
+	@NoDocumentation
 	public BeastySurface enableonLayer(int layer) {
-		if(layer <= BeastyWorld.LAYERS && layer >= 0) {
+		if(layer < 0 || layer > BeastyWorld.LAYERS) {
 			throw new RuntimeException("given layer is out of bounds");
 		}
 		if(this.widgets.size() > 0) {
@@ -193,13 +207,12 @@ public class BeastySurface
 				}
 			}
 		}
-		
 		return this;
 	}
 	
-	@Experimental
+	@NoDocumentation
 	public BeastySurface disableonLayer(int layer) {
-		if(layer <= BeastyWorld.LAYERS && layer >= 0) {
+		if(layer < 0 || layer > BeastyWorld.LAYERS) {
 			throw new RuntimeException("given layer is out of bounds");
 		}
 		if(this.widgets.size() > 0) {
@@ -209,7 +222,6 @@ public class BeastySurface
 				}
 			}
 		}
-		
 		return this;
 	}
 	
@@ -234,7 +246,7 @@ public class BeastySurface
 		return this;
 	}
 	
-	@Experimental
+	@NoDocumentation
 	public BeastySurface removeWidget(Widget w) {
 		if(this.widgets.size() > 0) {
 			this.widgets.remove(w);

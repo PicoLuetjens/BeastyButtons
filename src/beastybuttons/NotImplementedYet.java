@@ -11,5 +11,9 @@ import java.lang.annotation.Target;
 @Retention(RUNTIME)
 @Target({ TYPE, FIELD, METHOD })
 @interface NotImplementedYet {
-
+	
+	
+	
+	
+	//marks things that are planned but not implemented, most likely placeholders
 }

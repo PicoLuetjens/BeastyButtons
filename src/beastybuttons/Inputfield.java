@@ -325,6 +325,42 @@ public class Inputfield extends Widget
 	
     
     //******SET METHODS******
+    public Inputfield copySettings(Inputfield b) {
+    	this.positions[0] = b.positions[0];
+    	this.positions[1] = b.positions[1];
+    	
+    	this.sizes[0] = b.sizes[0];
+    	this.sizes[1] = b.sizes[1];
+    	
+    	this.round = b.round;
+    	
+    	this.input_text = b.input_text;
+    	this.greyText = b.greyText;
+    	this.textSize = b.textSize;
+    	
+    	this.hotkey = b.hotkey;
+    	
+    	this.textoffset[0] = b.textoffset[0];
+    	this.textoffset[1] = b.textoffset[1];
+    	
+    	this.background = b.background;
+    	this.foreground = b.foreground;
+    	this.overcolor = b.overcolor;
+    	this.input_color = b.input_color;
+    	this.gt_color = b.gt_color;
+    	
+    	this.limit_input_length = b.limit_input_length;
+    	
+    	this.active = b.active;
+    	this.visible = b.visible;
+    	
+    	this.LAYER = b.LAYER;
+    	
+    	this.outline = b.outline;
+    	
+    	return this;
+    }
+    
     public Inputfield setOutlineWidth(float o_width) {
     	this.outline = o_width;
     	return this;
@@ -533,11 +569,6 @@ public class Inputfield extends Widget
     public Inputfield setTextoffset(float x, float y) {
     	this.textoffset[0] = x;
     	this.textoffset[1] = y;
-    	return this;
-    }
-    
-    public Inputfield copySettings(Inputfield field) {
-    	
     	return this;
     }
     

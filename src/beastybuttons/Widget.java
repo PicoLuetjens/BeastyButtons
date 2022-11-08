@@ -100,6 +100,8 @@ abstract class Widget
     
     public abstract String getSourcePath();
     
+    //public abstract Widget copySettings(Widget w);
+    
     //render method for rendering objects with this type
     protected abstract void render();
 
