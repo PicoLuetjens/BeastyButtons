@@ -31,21 +31,20 @@ For now Testing was only done on Windows, however the usage on Linux and MacOS s
 The only problems that can occure are related to interaction with the file system, so maybe avoid functions that read from or write to the file system.
 That includes setting costum images as well as using import/export and using the logging system.
 
-# Bugs
+# Known Bugs
 - tabswitch handler currently does not work
 - importing files throws an error
 - BB_Image copySettings() has some weird behaviour with image crops, for now crops have to be set individually
 
 # Future Features (next Version update)
-- linking to a widget by its sourcepath
-- remove widgets and surfaces (also at runtime)
-- copy settings of another widget by value to save unnecessary code
-- enable and disable widgets on a specific layer
-
-# Future Future Features (further version update)
-- new widgets: BB_Table, Dropdownlist, Slider, Radiobutton, Coordinatesystem
-- auto scale new imports if the sketch size does not match up
+- rewritten fixed import and export system
 - virtual keyboard for inputfields with the mousehandler
 - individual costum font rendering for each Widget
 
-> current operating version: v1.0
+# Future Future Features (further version update)
+- animating between surfaces with transitions like wipe and opacity transition
+- new widgets: BB_Table, Dropdownlist, Slider, Radiobutton, Coordinatesystem
+- auto scale new imports if the sketch size does not match up
+- Visual GUI Builder to build a BeastyButtons Layout without coding
+
+> current operating version: v1.1
