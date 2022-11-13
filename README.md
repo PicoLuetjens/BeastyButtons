@@ -34,12 +34,13 @@ That includes setting costum images as well as using import/export and using the
 # Known Bugs
 - tabswitch handler currently does not work
 - importing files throws an error
-- BB_Image copySettings() has some weird behaviour with image crops, for now crops have to be set individually
+- BB_Image copySettings() has some weird behaviour with image crops, for now crops have to be set manually
 
 # Future Features (next Version update)
 - rewritten fixed import and export system
 - virtual keyboard for inputfields with the mousehandler
 - individual costum font rendering for each Widget
+- use HTML color codes in BeastyButtons
 
 # Future Future Features (further version update)
 - animating between surfaces with transitions like wipe and opacity transition
