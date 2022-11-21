@@ -47,5 +47,7 @@ That includes setting costum images as well as using import/export and using the
 - new widgets: BB_Table, Dropdownlist, Slider, Radiobutton, Coordinatesystem
 - auto scale new imports if the sketch size does not match up
 - Visual GUI Builder to build a BeastyButtons Layout without coding
+- export a Layout to a static HTML Website
+- export a Layout to ControlP5
 
 > current operating version: v1.1
