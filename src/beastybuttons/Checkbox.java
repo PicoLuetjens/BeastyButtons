@@ -37,6 +37,10 @@ public class Checkbox extends Widget
   	//the stroke width of the outline
   	protected float outline = 2f;
   	
+  	//rendering tooltip font
+  	protected PFont ttfont;
+  	
+  	protected String ttfontpath = "default";
   	
   	//******CONSTRUCTORS******
 	
@@ -49,6 +53,7 @@ public class Checkbox extends Widget
 		this.generateID();
 		this.rendercolor = this.background;
 		this.timeStep = System.currentTimeMillis();
+		this.ttfont = this.REF.createFont("bahnschrift.ttf", 32);
 	}
 	
 	public Checkbox(PApplet ref, float size, boolean round, boolean checked) {
@@ -61,6 +66,7 @@ public class Checkbox extends Widget
 		this.generateID();
 		this.rendercolor = this.background;
 		this.timeStep = System.currentTimeMillis();
+		this.ttfont = this.REF.createFont("bahnschrift.ttf", 32);
 	}
 	
 	//constructor for import
@@ -198,6 +204,8 @@ public class Checkbox extends Widget
     	this.ou = b.ou;
     	
     	this.outline = b.outline;
+    	this.ttfont = b.ttfont;
+    	this.ttfontpath = b.ttfontpath;
     	
     	return this;
     }
@@ -538,6 +546,22 @@ public class Checkbox extends Widget
     //enable or disable the tooltip(tooltip is automatically enabled on creation)
     public Checkbox enableTooltip(boolean enable) {
     	this.tooltip_enabled = enable;
+    	return this;
+    }
+    
+    
+    @NotImplementedYet
+    @NoDocumentation
+    @Experimental
+    public Checkbox setTooltipFont(String fontpath) {
+    	if(fontpath.endsWith(".vlw")) {
+    		this.ttfont = this.REF.loadFont(fontpath);
+    	}
+    	else {
+    		this.ttfont = this.REF.createFont(fontpath, 32);
+    	}
+    	this.ttfontpath = fontpath;
+    	
     	return this;
     }
     

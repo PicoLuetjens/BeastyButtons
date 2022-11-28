@@ -62,7 +62,6 @@ public class BeastyWorld
 	//logging enabled/disabled
 	private boolean logging = false;
 	
-	
 	private int loglevel;
 	
 	//The Loglist to write to at runtime
@@ -89,10 +88,6 @@ public class BeastyWorld
 	//all surfaces
 	private ArrayList<BeastySurface> surfaces = new ArrayList<>();
 	
-	
-	//render font
-	private PFont font;
-	
 	//variables before and after render loop
     private int beforecolor;
     private float beforestrokeweight;
@@ -114,6 +109,13 @@ public class BeastyWorld
     private int BACKGROUNDCOLOR;
 	
 	
+    private String fontpath = "default";
+    
+    private String ttfontpath = "default";
+    
+    // used to print out ids and user info when importing a layout
+    private ArrayList<String>import_printouts = new ArrayList<>();
+    
 	//******CONSTRUCTOR******
 	
 	public BeastyWorld(PApplet ref) {
@@ -274,14 +276,97 @@ public class BeastyWorld
 	
 	
 	//set the render font
-	/*
+	@NoDocumentation
 	@Experimental
-	public BeastyWorld setFont(PFont f) {
-		PApplet.println("WARNING(BB): setFont() IS STILL HIHGLY EXPERIMENTAL, AVOID USE IF POSSIBLE");
-		this.font = f;
+	@NotImplementedYet
+	public BeastyWorld setFont(String fontpath) {
+		this.fontpath = fontpath;
+		if(this.MODE == WidgetMode.WIDGET) {
+			for(Widget w : this.widgets) {
+				if(w instanceof Button) {
+					Button b = (Button)w;
+					b.setFont(fontpath);
+				}
+				else if(w instanceof Label) {
+					Label l = (Label)w;
+					l.setFont(fontpath);
+				}
+				else if(w instanceof Inputfield) {
+					Inputfield i = (Inputfield)w;
+					i.setFont(fontpath);
+				}
+			}
+		}
+		else if(this.MODE == WidgetMode.SURFACE) {
+			for(BeastySurface s : this.surfaces) {
+				for(Widget w : s.widgets) {
+					if(w instanceof Button) {
+						Button b = (Button)w;
+						b.setFont(fontpath);
+					}
+					else if(w instanceof Label) {
+						Label l = (Label)w;
+						l.setFont(fontpath);
+					}
+					else if(w instanceof Inputfield) {
+						Inputfield i = (Inputfield)w;
+						i.setFont(fontpath);
+					}
+				}
+			}
+		}
 		return this;
 	}
-	*/
+	
+	@NoDocumentation
+	@Experimental
+	@NotImplementedYet
+	public BeastyWorld setTooltipFont(String fontpath) {
+		this.ttfontpath = fontpath;
+		if(this.MODE == WidgetMode.WIDGET) {
+			for(Widget w : this.widgets) {
+				if(w instanceof Button) {
+					Button b = (Button)w;
+					b.setTooltipFont(fontpath);
+				}
+				else if(w instanceof Checkbox) {
+					Checkbox c = (Checkbox)w;
+					c.setTooltipFont(fontpath);
+				}
+				else if(w instanceof Inputfield) {
+					Inputfield i = (Inputfield)w;
+					i.setFont(fontpath);
+				}
+				else if(w instanceof BB_Image) {
+					BB_Image bi = (BB_Image)w;
+					bi.setTooltipFont(fontpath);
+				}
+			}
+		}
+		else if(this.MODE == WidgetMode.SURFACE) {
+			for(BeastySurface s : this.surfaces) {
+				for(Widget w : s.widgets) {
+					if(w instanceof Button) {
+						Button b = (Button)w;
+						b.setTooltipFont(fontpath);
+					}
+					else if(w instanceof Checkbox) {
+						Checkbox c = (Checkbox)w;
+						c.setTooltipFont(fontpath);
+					}
+					else if(w instanceof Inputfield) {
+						Inputfield i = (Inputfield)w;
+						i.setFont(fontpath);
+					}
+					else if(w instanceof BB_Image) {
+						BB_Image bi = (BB_Image)w;
+						bi.setTooltipFont(fontpath);
+					}
+				}
+			}
+		}
+		return this;
+	}
 	
 	//the background that is drawn at the end of Processing IDEs draw and before drawing BB Graphics
 	public BeastyWorld setBackgroundColor(int c) {
@@ -751,8 +836,14 @@ public class BeastyWorld
 	
 	//******IMPORT - EXPORT METHODS******
 	
+	//set additional information for the user to be print when importing
+	public void setPrintouts(String[] prts) {
+		for(String s : prts) {
+			this.import_printouts.add(s);
+		}
+	}
+	
 	//exports a .beasty file stored in XML format
-	@Experimental
 	public void exportLayout(String path) {
 		try {
 				XML exportxml = new XML("BeastyWorld");
@@ -817,7 +908,9 @@ public class BeastyWorld
 				settings_exp_tag.addChild("id").setContent(this.ID);
 				settings_exp_tag.addChild("sourcepath").setContent(this.SOURCEPATH);
 				settings_exp_tag.addChild("widgetmode").setContent(widgetmode_exp);
-				settings_exp_tag.addChild("renderpage").setContent(this.renderpage.ID);
+				if(this.MODE == WidgetMode.SURFACE) {
+					settings_exp_tag.addChild("renderpage").setContent(this.renderpage.ID);
+				}
 				settings_exp_tag.addChild("logging").setContent(logging_exp);
 				settings_exp_tag.addChild("loglevel").setContent(Integer.toString(this.loglevel));
 				settings_exp_tag.addChild("rellogpath").setContent(this.rel_path);
@@ -825,8 +918,16 @@ public class BeastyWorld
 				settings_exp_tag.addChild("backgrounddisable").setContent(backgrounddisable_exp);
 				settings_exp_tag.addChild("backgroundcolor").setContent(Integer.toString(this.BACKGROUNDCOLOR));
 				settings_exp_tag.addChild("windowtitle").setContent(this.windowtitle);
-				XML depedencies_exp_tag = settings_exp_tag.addChild("dependencies");
-				depedencies_exp_tag.addChild("iconpath").setContent(this.iconpath);
+				XML import_printouts_exp_tag = settings_exp_tag.addChild("printouts");
+				if(this.import_printouts.size() > 0) {
+					for(String s : this.import_printouts) {
+						import_printouts_exp_tag.addChild("printout").setContent(s);
+					}
+				}
+				XML dependencies_exp_tag = settings_exp_tag.addChild("dependencies");
+				dependencies_exp_tag.addChild("iconpath").setContent(this.iconpath);
+				dependencies_exp_tag.addChild("fontpath").setContent(this.fontpath);
+				dependencies_exp_tag.addChild("ttfontpath").setContent(this.ttfontpath);
 			
 				
 				//layout from here
@@ -854,12 +955,13 @@ public class BeastyWorld
 							widget_exp_tag.addChild("round").setContent(round);
 							widget_exp_tag.addChild("text").setContent(bu.text);
 							widget_exp_tag.addChild("textsize").setContent(Float.toString(bu.textSize));
-							String hotkey = "-1";
+							widget_exp_tag.addChild("outline").setContent(Float.toString(bu.outline));
+							String hotkey = "none";
 							if(bu.hotkey > -1) {
 								hotkey = Integer.toString(bu.hotkey);
 							}
 							else {
-								hotkey = "-1";
+								hotkey = "none";
 							}
 							widget_exp_tag.addChild("hotkey").setContent(hotkey);
 							widget_exp_tag.addChild("textoffsetx").setContent(Float.toString(bu.textoffset[0]));
@@ -950,6 +1052,8 @@ public class BeastyWorld
 							dependencies.addChild("onleftclick").setContent(olc);
 							dependencies.addChild("onmiddleclick").setContent(omc);
 							dependencies.addChild("onrightclick").setContent(orc);
+							dependencies.addChild("fontpath").setContent(bu.fontpath);
+							dependencies.addChild("ttfontpath").setContent(bu.ttfontpath);
 						}
 						else if(w instanceof Checkbox) {
 							widget_exp_tag.setString("type", "Checkbox");
@@ -968,12 +1072,13 @@ public class BeastyWorld
 								round = "false";
 							}
 							widget_exp_tag.addChild("round").setContent(round);
-							String hotkey = "-1";
+							widget_exp_tag.addChild("outline").setContent(Float.toString(c.outline));
+							String hotkey = "none";
 							if(c.hotkey > -1) {
 								hotkey = Integer.toString(c.hotkey);
 							}
 							else {
-								hotkey = "-1";
+								hotkey = "none";
 							}
 							widget_exp_tag.addChild("hotkey").setContent(hotkey);
 							String checktype = "check";
@@ -1077,6 +1182,7 @@ public class BeastyWorld
 							}
 							dependencies.addChild("oncheck").setContent(oc);
 							dependencies.addChild("onuncheck").setContent(ou);
+							dependencies.addChild("ttfontpath").setContent(c.ttfontpath);
 						}
 						else if(w instanceof Label) {
 							widget_exp_tag.setString("type", "Label");
@@ -1097,7 +1203,6 @@ public class BeastyWorld
 							widget_exp_tag.addChild("round").setContent(round);
 							widget_exp_tag.addChild("text").setContent(l.text);
 							widget_exp_tag.addChild("textsize").setContent(Float.toString(l.textSize));
-							
 							widget_exp_tag.addChild("textoffsetx").setContent(Float.toString(l.textoffset[0]));
 							widget_exp_tag.addChild("textoffsety").setContent(Float.toString(l.textoffset[1]));
 							widget_exp_tag.addChild("backgroundcolor").setContent(Integer.toString(l.background));
@@ -1112,6 +1217,9 @@ public class BeastyWorld
 							}
 							widget_exp_tag.addChild("visible").setContent(visible);
 							widget_exp_tag.addChild("layer").setContent(Integer.toString(l.LAYER));
+							
+							XML dependencies = widget_exp_tag.addChild("dependencies");
+							dependencies.addChild("fontpath").setContent(l.fontpath);
 						}
 						else if(w instanceof Inputfield) {
 							widget_exp_tag.setString("type", "Inputfield");
@@ -1133,6 +1241,7 @@ public class BeastyWorld
 							widget_exp_tag.addChild("inputtext").setContent(i.input_text);
 							widget_exp_tag.addChild("greyedtext").setContent(i.greyText);
 							widget_exp_tag.addChild("textsize").setContent(Float.toString(i.textSize));
+							widget_exp_tag.addChild("outline").setContent(Float.toString(i.outline));
 							String hotkey = "-1";
 							if(i.hotkey > -1) {
 								hotkey = Integer.toString(i.hotkey);
@@ -1207,6 +1316,9 @@ public class BeastyWorld
 								enabled = "false";
 							}
 							tooltip.addChild("enabled").setContent(enabled);
+							XML dependencies = widget_exp_tag.addChild("dependencies");
+							dependencies.addChild("fontpath").setContent(i.fontpath);
+							dependencies.addChild("ttfontpath").setContent(i.ttfontpath);
 						}
 						else if(w instanceof BB_Image) {
 							widget_exp_tag.setString("type", "BB_Image");
@@ -1287,6 +1399,7 @@ public class BeastyWorld
 							tooltip.addChild("enabled").setContent(enabled);
 							XML dependencies = widget_exp_tag.addChild("dependencies");
 							dependencies.addChild("sourceimg").setContent(bbi.imgpath);
+							dependencies.addChild("ttfontpath").setContent(bbi.ttfontpath);
 						}
 					}
 				}
@@ -1311,6 +1424,8 @@ public class BeastyWorld
 						settings_surface_exp_tag.addChild("imgoffsety").setContent(Float.toString(b.offsety));
 						XML dependenciessurface_exp_tag = settings_surface_exp_tag.addChild("dependencies");
 						dependenciessurface_exp_tag.addChild("backgroundimgpath").setContent(b.imgpath);
+						dependenciessurface_exp_tag.addChild("fontpath").setContent(b.fontpath);
+						dependenciessurface_exp_tag.addChild("ttfontpath").setContent(b.ttfontpath);
 						
 						XML widgets_surface_exp_tag = surface_exp_tag.addChild("Widgets");
 						
@@ -1334,15 +1449,15 @@ public class BeastyWorld
 									round = "false";
 								}
 								widget_surface_exp_tag.addChild("round").setContent(round);
-								widget_surface_exp_tag.addChild("outline").setContent(Float.toString(bu.outline));
 								widget_surface_exp_tag.addChild("text").setContent(bu.text);
 								widget_surface_exp_tag.addChild("textsize").setContent(Float.toString(bu.textSize));
-								String hotkey = "-1";
+								widget_surface_exp_tag.addChild("outline").setContent(Float.toString(bu.outline));
+								String hotkey = "none";
 								if(bu.hotkey > -1) {
 									hotkey = Integer.toString(bu.hotkey);
 								}
 								else {
-									hotkey = "-1";
+									hotkey = "none";
 								}
 								widget_surface_exp_tag.addChild("hotkey").setContent(hotkey);
 								widget_surface_exp_tag.addChild("textoffsetx").setContent(Float.toString(bu.textoffset[0]));
@@ -1433,6 +1548,8 @@ public class BeastyWorld
 								dependencies.addChild("onleftclick").setContent(olc);
 								dependencies.addChild("onmiddleclick").setContent(omc);
 								dependencies.addChild("onrightclick").setContent(orc);
+								dependencies.addChild("fontpath").setContent(bu.fontpath);
+								dependencies.addChild("ttfontpath").setContent(bu.ttfontpath);
 							}
 							else if(w instanceof Checkbox) {
 								widget_surface_exp_tag.setString("type", "Checkbox");
@@ -1452,12 +1569,12 @@ public class BeastyWorld
 								}
 								widget_surface_exp_tag.addChild("round").setContent(round);
 								widget_surface_exp_tag.addChild("outline").setContent(Float.toString(c.outline));
-								String hotkey = "-1";
+								String hotkey = "none";
 								if(c.hotkey > -1) {
 									hotkey = Integer.toString(c.hotkey);
 								}
 								else {
-									hotkey = "-1";
+									hotkey = "none";
 								}
 								widget_surface_exp_tag.addChild("hotkey").setContent(hotkey);
 								String checktype = "check";
@@ -1561,6 +1678,7 @@ public class BeastyWorld
 								}
 								dependencies.addChild("oncheck").setContent(oc);
 								dependencies.addChild("onuncheck").setContent(ou);
+								dependencies.addChild("ttfontpath").setContent(c.ttfontpath);
 							}
 							else if(w instanceof Label) {
 								widget_surface_exp_tag.setString("type", "Label");
@@ -1581,7 +1699,6 @@ public class BeastyWorld
 								widget_surface_exp_tag.addChild("round").setContent(round);
 								widget_surface_exp_tag.addChild("text").setContent(l.text);
 								widget_surface_exp_tag.addChild("textsize").setContent(Float.toString(l.textSize));
-								
 								widget_surface_exp_tag.addChild("textoffsetx").setContent(Float.toString(l.textoffset[0]));
 								widget_surface_exp_tag.addChild("textoffsety").setContent(Float.toString(l.textoffset[1]));
 								widget_surface_exp_tag.addChild("backgroundcolor").setContent(Integer.toString(l.background));
@@ -1596,6 +1713,9 @@ public class BeastyWorld
 								}
 								widget_surface_exp_tag.addChild("visible").setContent(visible);
 								widget_surface_exp_tag.addChild("layer").setContent(Integer.toString(l.LAYER));
+								
+								XML dependencies = widget_surface_exp_tag.addChild("dependencies");
+								dependencies.addChild("fontpath").setContent(l.fontpath);
 							}
 							else if(w instanceof Inputfield) {
 								widget_surface_exp_tag.setString("type", "Inputfield");
@@ -1614,10 +1734,10 @@ public class BeastyWorld
 									round = "false";
 								}
 								widget_surface_exp_tag.addChild("round").setContent(round);
-								widget_surface_exp_tag.addChild("outline").setContent(Float.toString(i.outline));
 								widget_surface_exp_tag.addChild("inputtext").setContent(i.input_text);
 								widget_surface_exp_tag.addChild("greyedtext").setContent(i.greyText);
 								widget_surface_exp_tag.addChild("textsize").setContent(Float.toString(i.textSize));
+								widget_surface_exp_tag.addChild("outline").setContent(Float.toString(i.outline));
 								String hotkey = "-1";
 								if(i.hotkey > -1) {
 									hotkey = Integer.toString(i.hotkey);
@@ -1692,6 +1812,9 @@ public class BeastyWorld
 									enabled = "false";
 								}
 								tooltip.addChild("enabled").setContent(enabled);
+								XML dependencies = widget_surface_exp_tag.addChild("dependencies");
+								dependencies.addChild("fontpath").setContent(i.fontpath);
+								dependencies.addChild("ttfontpath").setContent(i.ttfontpath);
 							}
 							else if(w instanceof BB_Image) {
 								widget_surface_exp_tag.setString("type", "BB_Image");
@@ -1772,6 +1895,7 @@ public class BeastyWorld
 								tooltip.addChild("enabled").setContent(enabled);
 								XML dependencies = widget_surface_exp_tag.addChild("dependencies");
 								dependencies.addChild("sourceimg").setContent(bbi.imgpath);
+								dependencies.addChild("ttfontpath").setContent(bbi.ttfontpath);
 							}
 						}
 					}
@@ -1780,7 +1904,7 @@ public class BeastyWorld
 				this.REF.saveXML(exportxml, path);
 		}
 		catch(Exception e){
-			PApplet.println("WARNING(BB): COULD NOT EXPORT LAYOUT -> CONTINUEING WITHOUT EXPORT");
+			PApplet.println("WARNING(BB): COULD NOT EXPORT LAYOUT -> CONTINUEING WITHOUT EXPORTING");
 		}
 	}
 	
@@ -1790,1205 +1914,241 @@ public class BeastyWorld
 	@Experimental
 	public void importLayout(String path, boolean dependencies) {
 		try {
-			if(path.split(".")[1].equals("beasty")) {
-				/*if(this.widgets.size() > 0) {
-					this.widgets.clear();
-				}
-				if(this.surfaces.size() > 0) {
-					this.surfaces.clear();
-				}*/
-				
-				XML importxml = this.REF.loadXML(path);
-				
-				//check the version
-				String bbversion = importxml.getChild("System").getChild("bbversion").getContent();
-				if(!Info.version().equals(bbversion)) {
-					PApplet.println("WARNING(BB): BEASTYBUTTONS VERSION DOES NOT MATCH THE VERSION THE FILE WAS EXPORTED WITH, THIS MIGHT CAUSE ERRORS");
-				}
-				int sketchimpx = importxml.getChild("Sketch").getChild("exportresx").getIntContent();
-				int sketchimpy = importxml.getChild("Sketch").getChild("exportresy").getIntContent();
-				if(this.REF.width != sketchimpx || this.REF.height != sketchimpy) {
-				//if((this.REF.width/this.REF.height) != (sketchimpx/sketchimpy)) {
-					throw new RuntimeException("Import Error: Import file does not match the Sketch Resolution");
-				}
-				
-				//get the mode
-				if(importxml.getChild("Settings").getChild("widgetmode").getContent() == "widget") {
-					
-					//import widgets
-					XML[] elements = importxml.getChild("Layout").getChildren();
-					for(XML element : elements) {
-						String type_imp = element.getString("type");
-						if(type_imp == "Button") {
-							String id_imp = element.getChild("id").getContent();
-							String sourcePath_imp = id_imp;
-							float xpos_imp = element.getChild("xpos").getFloatContent();
-							float ypos_imp = element.getChild("ypos").getFloatContent();
-							float xsize_imp = element.getChild("xsize").getFloatContent();
-							float ysize_imp = element.getChild("ysize").getFloatContent();
-							boolean round_imp = false;
-							if(element.getChild("xpos").getContent() == "true") {
-								round_imp = true;
-							}
-							else if(element.getChild("xpos").getContent() == "false") {
-								round_imp = false;
-							}
-							String text_imp = element.getChild("text").getContent();
-							float textSize_imp = element.getChild("textsize").getFloatContent();
-							int hotkey_imp = element.getChild("hotkey").getIntContent();
-							float textoffsetx_imp = element.getChild("textoffsetx").getFloatContent();
-							float textoffsety_imp = element.getChild("textoffsety").getFloatContent();
-							int backgroundcolor_imp = element.getChild("backgroundcolor").getIntContent();
-							int foregroundcolor_imp = element.getChild("foregroundcolor").getIntContent();
-							int overcolor_imp = element.getChild("overcolor").getIntContent();
-							int clickcolor_imp = element.getChild("clickcolor").getIntContent();
-							boolean active_imp = false;
-							if(element.getChild("active").getContent() == "true") {
-								active_imp = true;
-							}
-							else if(element.getChild("active").getContent() == "false") {
-								active_imp = false;
-							}
-							boolean visible_imp = false;
-							if(element.getChild("visible").getContent() == "true") {
-								visible_imp = true;
-							}
-							else if(element.getChild("visible").getContent() == "false") {
-								visible_imp = false;
-							}
-							int layer_imp = element.getChild("layer").getIntContent();
-							String tttext_imp = element.getChild("tooltip").getChild("tttext").getContent();
-							float tttextsize_imp = element.getChild("tooltip").getChild("tttextsize").getFloatContent();
-							float ttposx_imp = element.getChild("tooltip").getChild("ttposx").getFloatContent();
-							float ttposy_imp = element.getChild("tooltip").getChild("ttposy").getFloatContent();
-							float ttsizex_imp = element.getChild("tooltip").getChild("ttsizex").getFloatContent();
-							float ttsizey_imp = element.getChild("tooltip").getChild("ttsizey").getFloatContent();
-							int ttforeground_imp = element.getChild("tooltip").getChild("ttforeground").getIntContent();
-							int ttbackground_imp = element.getChild("tooltip").getChild("ttbackground").getIntContent();
-							boolean ttround_imp = false;
-							if(element.getChild("tooltip").getChild("roundtt").getContent() == "true") {
-								ttround_imp = true;
-							}
-							else if(element.getChild("tooltip").getChild("roundtt").getContent() == "false") {
-								ttround_imp = false;
-							}
-							float ttintervall_imp = element.getChild("tooltip").getChild("intervall").getFloatContent();
-							float tttextoffsetx_imp = element.getChild("tooltip").getChild("tttextoffsetx").getFloatContent();
-							float tttextoffsety_imp = element.getChild("tooltip").getChild("tttextoffsety").getFloatContent();
-							boolean ttenabled_imp = false;
-							if(element.getChild("tooltip").getChild("enabled").getContent() == "true") {
-								ttenabled_imp = true;
-							}
-							else if(element.getChild("tooltip").getChild("enabled").getContent() == "false") {
-								ttenabled_imp = false;
-							}
-							String olc_imp = "none", omc_imp = "none", orc_imp = "none";
-							if(dependencies) {
-								olc_imp = element.getChild("dependencies").getChild("onleftlcick").getContent();
-								omc_imp = element.getChild("dependencies").getChild("onmiddleclick").getContent();
-								orc_imp = element.getChild("dependencies").getChild("onrightclick").getContent();
-							}
-							
-							//create and add widget to world
-							Button b = new Button(this.REF);
-							b.ID = id_imp;
-							b.SOURCEPATH = id_imp;
-							b.positions[0] = xpos_imp;
-							b.positions[1] = ypos_imp;
-							b.sizes[0] = xsize_imp;
-							b.sizes[1] = ysize_imp;
-							b.round = round_imp;
-							b.text = text_imp;
-							b.textSize = textSize_imp;
-							if(hotkey_imp != -1) {
-								b.hotkey = hotkey_imp;
-							}
-							b.textoffset[0] = textoffsetx_imp;
-							b.textoffset[1] = textoffsety_imp;
-							b.background = backgroundcolor_imp;
-							b.foreground = foregroundcolor_imp;
-							b.overcolor = overcolor_imp;
-							b.clickcolor = clickcolor_imp;
-							b.active = active_imp;
-							b.visible = visible_imp;
-							b.LAYER = layer_imp;
-							if(tttext_imp != "none") {
-								b.tooltiptext = tttext_imp;
-								b.tooltiptextsize = tttextsize_imp;
-								b.ttpositions[0] = ttposx_imp;
-								b.ttpositions[1] = ttposy_imp;
-								b.ttsizes[0] = ttsizex_imp;
-								b.ttsizes[1] = ttsizey_imp;
-								b.ttforeground = ttforeground_imp;
-								b.ttbackground = ttbackground_imp;
-								b.roundtt = ttround_imp;
-								b.intervall = ttintervall_imp;
-								b.tttextoffset[0] = tttextoffsetx_imp;
-								b.tttextoffset[1] = tttextoffsety_imp;
-								b.tooltip_enabled = ttenabled_imp;
-							}
-							if(dependencies) {
-								if(olc_imp != "none") {
-									b.olc = olc_imp;
-								}
-								if(omc_imp != "none") {
-									b.omc = omc_imp;
-								}
-								if(orc_imp != "none") {
-									b.orc = orc_imp;
-								}
-							}
-							
-							this.addWidget(b);
-						}
-						else if(type_imp == "Checkbox") {
-							String id_imp = element.getChild("id").getContent();
-							String sourcePath_imp = id_imp;
-							float xpos_imp = element.getChild("xpos").getFloatContent();
-							float ypos_imp = element.getChild("ypos").getFloatContent();
-							float xsize_imp = element.getChild("xsize").getFloatContent();
-							float ysize_imp = element.getChild("ysize").getFloatContent();
-							boolean round_imp = false;
-							if(element.getChild("xpos").getContent() == "true") {
-								round_imp = true;
-							}
-							else if(element.getChild("xpos").getContent() == "false") {
-								round_imp = false;
-							}
-							int hotkey_imp = element.getChild("hotkey").getIntContent();
-							String checktype_imp = element.getChild("checktype").getContent();
-							boolean state_imp = false;
-							if(element.getChild("state").getContent() == "true") {
-								state_imp = true;
-							}
-							else if(element.getChild("state").getContent() == "false") {
-								state_imp = false;
-							}
-							int backgroundcolor_imp = element.getChild("backgroundcolor").getIntContent();
-							int foregroundcolor_imp = element.getChild("foregroundcolor").getIntContent();
-							int overcolor_imp = element.getChild("overcolor").getIntContent();
-							int clickcolor_imp = element.getChild("clickcolor").getIntContent();
-							boolean active_imp = false;
-							if(element.getChild("active").getContent() == "true") {
-								active_imp = true;
-							}
-							else if(element.getChild("active").getContent() == "false") {
-								active_imp = false;
-							}
-							boolean visible_imp = false;
-							if(element.getChild("visible").getContent() == "true") {
-								visible_imp = true;
-							}
-							else if(element.getChild("visible").getContent() == "false") {
-								visible_imp = false;
-							}
-							int layer_imp = element.getChild("layer").getIntContent();
-							String tttext_imp = element.getChild("tooltip").getChild("tttext").getContent();
-							float tttextsize_imp = element.getChild("tooltip").getChild("tttextsize").getFloatContent();
-							float ttposx_imp = element.getChild("tooltip").getChild("ttposx").getFloatContent();
-							float ttposy_imp = element.getChild("tooltip").getChild("ttposy").getFloatContent();
-							float ttsizex_imp = element.getChild("tooltip").getChild("ttsizex").getFloatContent();
-							float ttsizey_imp = element.getChild("tooltip").getChild("ttsizey").getFloatContent();
-							int ttforeground_imp = element.getChild("tooltip").getChild("ttforeground").getIntContent();
-							int ttbackground_imp = element.getChild("tooltip").getChild("ttbackground").getIntContent();
-							boolean ttround_imp = false;
-							if(element.getChild("tooltip").getChild("roundtt").getContent() == "true") {
-								ttround_imp = true;
-							}
-							else if(element.getChild("tooltip").getChild("roundtt").getContent() == "false") {
-								ttround_imp = false;
-							}
-							float ttintervall_imp = element.getChild("tooltip").getChild("intervall").getFloatContent();
-							float tttextoffsetx_imp = element.getChild("tooltip").getChild("tttextoffsetx").getFloatContent();
-							float tttextoffsety_imp = element.getChild("tooltip").getChild("tttextoffsety").getFloatContent();
-							boolean ttenabled_imp = false;
-							if(element.getChild("tooltip").getChild("enabled").getContent() == "true") {
-								ttenabled_imp = true;
-							}
-							else if(element.getChild("tooltip").getChild("enabled").getContent() == "false") {
-								ttenabled_imp = false;
-							}
-							String oc_imp = "none", ou_imp = "none";
-							if(dependencies) {
-								oc_imp = element.getChild("dependencies").getChild("oncheck").getContent();
-								ou_imp = element.getChild("dependencies").getChild("onuncheck").getContent();
-							}
-							
-							//create and add Widget to world
-							Checkbox c = new Checkbox(this.REF);
-							c.ID = id_imp;
-							c.SOURCEPATH = id_imp;
-							c.positions[0] = xpos_imp;
-							c.positions[1] = ypos_imp;
-							c.sizes[0] = xsize_imp;
-							c.sizes[1] = ysize_imp;
-							c.round = round_imp;
-							if(hotkey_imp != -1) {
-								c.hotkey = hotkey_imp;
-							}
-							c.setChecktype(checktype_imp);
-							c.state = state_imp;
-							c.background = backgroundcolor_imp;
-							c.foreground = foregroundcolor_imp;
-							c.overcolor = overcolor_imp;
-							c.clickcolor = clickcolor_imp;
-							c.active = active_imp;
-							c.visible = visible_imp;
-							c.LAYER = layer_imp;
-							if(tttext_imp != "none") {
-								c.tooltiptext = tttext_imp;
-								c.tooltiptextsize = tttextsize_imp;
-								c.ttpositions[0] = ttposx_imp;
-								c.ttpositions[1] = ttposy_imp;
-								c.ttsizes[0] = ttsizex_imp;
-								c.ttsizes[1] = ttsizey_imp;
-								c.ttforeground = ttforeground_imp;
-								c.ttbackground = ttbackground_imp;
-								c.roundtt = ttround_imp;
-								c.intervall = ttintervall_imp;
-								c.tttextoffset[0] = tttextoffsetx_imp;
-								c.tttextoffset[1] = tttextoffsety_imp;
-								c.tooltip_enabled = ttenabled_imp;
-							}
-							if(dependencies) {
-								if(oc_imp != "none") {
-									c.oc = oc_imp;
-								}
-								if(ou_imp != "none") {
-									c.ou = ou_imp;
-								}
-							}
-							
-							this.addWidget(c);
-						}
-						else if(type_imp == "Label") {
-							String id_imp = element.getChild("id").getContent();
-							String sourcePath_imp = id_imp;
-							float xpos_imp = element.getChild("xpos").getFloatContent();
-							float ypos_imp = element.getChild("ypos").getFloatContent();
-							float xsize_imp = element.getChild("xsize").getFloatContent();
-							float ysize_imp = element.getChild("ysize").getFloatContent();
-							boolean round_imp = false;
-							if(element.getChild("xpos").getContent() == "true") {
-								round_imp = true;
-							}
-							else if(element.getChild("xpos").getContent() == "false") {
-								round_imp = false;
-							}
-							String text_imp = element.getChild("text").getContent();
-							float textSize_imp = element.getChild("textsize").getFloatContent();
-							float textoffsetx_imp = element.getChild("textoffsetx").getFloatContent();
-							float textoffsety_imp = element.getChild("textoffsety").getFloatContent();
-							int backgroundcolor_imp = element.getChild("backgroundcolor").getIntContent();
-							int foregroundcolor_imp = element.getChild("foregroundcolor").getIntContent();
-							boolean active_imp = false;
-							if(element.getChild("active").getContent() == "true") {
-								active_imp = true;
-							}
-							else if(element.getChild("active").getContent() == "false") {
-								active_imp = false;
-							}
-							boolean visible_imp = false;
-							if(element.getChild("visible").getContent() == "true") {
-								visible_imp = true;
-							}
-							else if(element.getChild("visible").getContent() == "false") {
-								visible_imp = false;
-							}
-							int layer_imp = element.getChild("layer").getIntContent();
-							
-							//create and add widget to world
-							Label l = new Label(this.REF);
-							l.ID = id_imp;
-							l.SOURCEPATH = id_imp;
-							l.positions[0] = xpos_imp;
-							l.positions[1] = ypos_imp;
-							l.sizes[0] = xsize_imp;
-							l.sizes[1] = ysize_imp;
-							l.round = round_imp;
-							l.text = text_imp;
-							l.textSize = textSize_imp;
-							l.textoffset[0] = textoffsetx_imp;
-							l.textoffset[1] = textoffsety_imp;
-							l.background = backgroundcolor_imp;
-							l.foreground = foregroundcolor_imp;
-							l.visible = visible_imp;
-							l.LAYER = layer_imp;
-							
-							this.addWidget(l);
-						}
-						else if(type_imp == "Inputfield") {
-							String id_imp = element.getChild("id").getContent();
-							String sourcePath_imp = id_imp;
-							float xpos_imp = element.getChild("xpos").getFloatContent();
-							float ypos_imp = element.getChild("ypos").getFloatContent();
-							float xsize_imp = element.getChild("xsize").getFloatContent();
-							float ysize_imp = element.getChild("ysize").getFloatContent();
-							boolean round_imp = false;
-							if(element.getChild("xpos").getContent() == "true") {
-								round_imp = true;
-							}
-							else if(element.getChild("xpos").getContent() == "false") {
-								round_imp = false;
-							}
-							String inputtext_imp = element.getChild("inputtext").getContent();
-							String greyedtext_imp = element.getChild("greyedtext").getContent();
-							float textSize_imp = element.getChild("textsize").getFloatContent();
-							int hotkey_imp = element.getChild("hotkey").getIntContent();
-							float textoffsetx_imp = element.getChild("textoffsetx").getFloatContent();
-							float textoffsety_imp = element.getChild("textoffsety").getFloatContent();
-							int backgroundcolor_imp = element.getChild("backgroundcolor").getIntContent();
-							int foregroundcolor_imp = element.getChild("foregroundcolor").getIntContent();
-							int overcolor_imp = element.getChild("overcolor").getIntContent();
-							int inputcolor_imp = element.getChild("inputcolor").getIntContent();
-							int greyedtextcolor_imp = element.getChild("greyedttextcolor").getIntContent();
-							int limitinputtext_imp = element.getChild("limitinputtext").getIntContent();
-							boolean active_imp = false;
-							if(element.getChild("active").getContent() == "true") {
-								active_imp = true;
-							}
-							else if(element.getChild("active").getContent() == "false") {
-								active_imp = false;
-							}
-							boolean visible_imp = false;
-							if(element.getChild("visible").getContent() == "true") {
-								visible_imp = true;
-							}
-							else if(element.getChild("visible").getContent() == "false") {
-								visible_imp = false;
-							}
-							int layer_imp = element.getChild("layer").getIntContent();
-							String tttext_imp = element.getChild("tooltip").getChild("tttext").getContent();
-							float tttextsize_imp = element.getChild("tooltip").getChild("tttextsize").getFloatContent();
-							float ttposx_imp = element.getChild("tooltip").getChild("ttposx").getFloatContent();
-							float ttposy_imp = element.getChild("tooltip").getChild("ttposy").getFloatContent();
-							float ttsizex_imp = element.getChild("tooltip").getChild("ttsizex").getFloatContent();
-							float ttsizey_imp = element.getChild("tooltip").getChild("ttsizey").getFloatContent();
-							int ttforeground_imp = element.getChild("tooltip").getChild("ttforeground").getIntContent();
-							int ttbackground_imp = element.getChild("tooltip").getChild("ttbackground").getIntContent();
-							boolean ttround_imp = false;
-							if(element.getChild("tooltip").getChild("roundtt").getContent() == "true") {
-								ttround_imp = true;
-							}
-							else if(element.getChild("tooltip").getChild("roundtt").getContent() == "false") {
-								ttround_imp = false;
-							}
-							float ttintervall_imp = element.getChild("tooltip").getChild("intervall").getFloatContent();
-							float tttextoffsetx_imp = element.getChild("tooltip").getChild("tttextoffsetx").getFloatContent();
-							float tttextoffsety_imp = element.getChild("tooltip").getChild("tttextoffsety").getFloatContent();
-							boolean ttenabled_imp = false;
-							if(element.getChild("tooltip").getChild("enabled").getContent() == "true") {
-								ttenabled_imp = true;
-							}
-							else if(element.getChild("tooltip").getChild("enabled").getContent() == "false") {
-								ttenabled_imp = false;
-							}
-							
-							//create widget and add to world
-							Inputfield i = new Inputfield(this.REF);
-							i.ID = id_imp;
-							i.SOURCEPATH = id_imp;
-							i.positions[0] = xpos_imp;
-							i.positions[1] = ypos_imp;
-							i.sizes[0] = xsize_imp;
-							i.sizes[1] = ysize_imp;
-							i.round = round_imp;
-							i.input_text = inputtext_imp;
-							i.greyText = greyedtext_imp;
-							i.textSize = textSize_imp;
-							if(hotkey_imp != -1) {
-								i.hotkey = hotkey_imp;
-							}
-							i.textoffset[0] = textoffsetx_imp;
-							i.textoffset[1] = textoffsety_imp;
-							i.background = backgroundcolor_imp;
-							i.foreground = foregroundcolor_imp;
-							i.input_color = inputcolor_imp;
-							i.gt_color = greyedtextcolor_imp;
-							i.limit_input_length = limitinputtext_imp;
-							i.active = active_imp;
-							i.visible = visible_imp;
-							i.LAYER = layer_imp;
-							if(tttext_imp != "none") {
-								i.tooltiptext = tttext_imp;
-								i.tooltiptextsize = tttextsize_imp;
-								i.ttpositions[0] = ttposx_imp;
-								i.ttpositions[1] = ttposy_imp;
-								i.ttsizes[0] = ttsizex_imp;
-								i.ttsizes[1] = ttsizey_imp;
-								i.ttforeground = ttforeground_imp;
-								i.ttbackground = ttbackground_imp;
-								i.roundtt = ttround_imp;
-								i.intervall = ttintervall_imp;
-								i.tttextoffset[0] = tttextoffsetx_imp;
-								i.tttextoffset[1] = tttextoffsety_imp;
-								i.tooltip_enabled = ttenabled_imp;
-							}
-							
-							this.addWidget(i);
-						}
-						else if(type_imp == "BB_Image") {
-							String id_imp = element.getChild("id").getContent();
-							String sourcePath_imp = id_imp;
-							float xpos_imp = element.getChild("xpos").getFloatContent();
-							float ypos_imp = element.getChild("ypos").getFloatContent();
-							float xsize_imp = element.getChild("xsize").getFloatContent();
-							float ysize_imp = element.getChild("ysize").getFloatContent();
-							boolean active_imp = false;
-							if(element.getChild("active").getContent() == "true") {
-								active_imp = true;
-							}
-							else if(element.getChild("active").getContent() == "false") {
-								active_imp = false;
-							}
-							boolean visible_imp = false;
-							if(element.getChild("visible").getContent() == "true") {
-								visible_imp = true;
-							}
-							else if(element.getChild("visible").getContent() == "false") {
-								visible_imp = false;
-							}
-							int layer_imp = element.getChild("layer").getIntContent();
-							
-							String tttext_imp = element.getChild("tooltip").getChild("tttext").getContent();
-							float tttextsize_imp = element.getChild("tooltip").getChild("tttextsize").getFloatContent();
-							float ttposx_imp = element.getChild("tooltip").getChild("ttposx").getFloatContent();
-							float ttposy_imp = element.getChild("tooltip").getChild("ttposy").getFloatContent();
-							float ttsizex_imp = element.getChild("tooltip").getChild("ttsizex").getFloatContent();
-							float ttsizey_imp = element.getChild("tooltip").getChild("ttsizey").getFloatContent();
-							int ttforeground_imp = element.getChild("tooltip").getChild("ttforeground").getIntContent();
-							int ttbackground_imp = element.getChild("tooltip").getChild("ttbackground").getIntContent();
-							boolean ttround_imp = false;
-							if(element.getChild("tooltip").getChild("roundtt").getContent() == "true") {
-								ttround_imp = true;
-							}
-							else if(element.getChild("tooltip").getChild("roundtt").getContent() == "false") {
-								ttround_imp = false;
-							}
-							float ttintervall_imp = element.getChild("tooltip").getChild("intervall").getFloatContent();
-							float tttextoffsetx_imp = element.getChild("tooltip").getChild("tttextoffsetx").getFloatContent();
-							float tttextoffsety_imp = element.getChild("tooltip").getChild("tttextoffsety").getFloatContent();
-							boolean ttenabled_imp = false;
-							if(element.getChild("tooltip").getChild("enabled").getContent() == "true") {
-								ttenabled_imp = true;
-							}
-							else if(element.getChild("tooltip").getChild("enabled").getContent() == "false") {
-								ttenabled_imp = false;
-							}
-							String imgsourcepath_imp = "none";
-							if(dependencies) {
-								imgsourcepath_imp = element.getChild("dependencies").getChild("sourceimg").getContent();
-							}
-							
-							//create widget and add to world(image cant be created and added without image dependency)
-							if(dependencies) {
-								BB_Image bi = new BB_Image(this.REF);
-								bi.ID = id_imp;
-								bi.SOURCEPATH = id_imp;
-								bi.IMG = this.REF.loadImage(imgsourcepath_imp);
-								
-								//get crops
-								XML[] crops = element.getChild("crops").getChildren();
-								for(XML crop : crops) {
-									String cropstring = crop.getContent();
-									String edge = cropstring.split(",")[0];
-									int pixel_amount = Integer.parseInt(cropstring.split(",")[1]);
-									bi.addCrop(edge, pixel_amount);
-								}
-								
-								//execute crops
-								bi.executeCrops();
-								
-								bi.positions[0] = xpos_imp;
-								bi.positions[1] = ypos_imp;
-								bi.sizes[0] = xsize_imp;
-								bi.sizes[1] = ysize_imp;
-								bi.active = active_imp;
-								bi.visible = visible_imp;
-								bi.LAYER = layer_imp;
-								if(tttext_imp != "none") {
-									bi.tooltiptext = tttext_imp;
-									bi.tooltiptextsize = tttextsize_imp;
-									bi.ttpositions[0] = ttposx_imp;
-									bi.ttpositions[1] = ttposy_imp;
-									bi.ttsizes[0] = ttsizex_imp;
-									bi.ttsizes[1] = ttsizey_imp;
-									bi.ttforeground = ttforeground_imp;
-									bi.ttbackground = ttbackground_imp;
-									bi.roundtt = ttround_imp;
-									bi.intervall = ttintervall_imp;
-									bi.tttextoffset[0] = tttextoffsetx_imp;
-									bi.tttextoffset[1] = tttextoffsety_imp;
-									bi.tooltip_enabled = ttenabled_imp;
-								}
-								
-								this.addWidget(bi);
-							}
-						}
-					}
-				}
-				else if(importxml.getChild("Settings").getChild("widgetmode").getContent() == "surface") {
-					
-					//import surfaces
-					XML[] sites = importxml.getChild("Layout").getChildren();
-					for(XML site : sites) {
-						
-						XML settings = site.getChild("Settings");
-						
-						String surfaceid_imp = settings.getChild("id").getContent();
-						String surfacesourcepath_imp = settings.getChild("sourcepath").getContent();
-						float surfacexpos_imp = settings.getChild("xpos").getFloatContent();
-						float surfaceypos_imp = settings.getChild("ypos").getFloatContent();
-						boolean surfacestretchbi_imp = false;
-						if(settings.getChild("stretchbackgroundimg").getContent() == "true") {
-							surfacestretchbi_imp = true;
-						}
-						else if(settings.getChild("stretchbackgroundimg").getContent() == "false") {
-							surfacestretchbi_imp = false;
-						}
-						int surfacebackgroundcolor_imp = settings.getChild("backgroundcolor").getIntContent();
-						float surfaceimgoffsetx_imp = settings.getChild("imgoffsetx").getFloatContent();
-						float surfaceimgoffsety_imp = settings.getChild("imgoffsety").getFloatContent();
-						
-						String surfacebackgroundimgpath_imp = "none";
-						if(dependencies) {
-							surfacebackgroundimgpath_imp = settings.getChild("dependencies").getChild("backgroundimgpath").getContent();
-						}
-						
-						BeastySurface surface = new BeastySurface(this.REF);
-						surface.ID = surfaceid_imp;
-						surface.SOURCEPATH = surfaceid_imp;
-						surface.posx = surfacexpos_imp;
-						surface.posy = surfaceypos_imp;
-						surface.backgroundcolor = surfacebackgroundcolor_imp;
-						surface.offsetx = surfaceimgoffsetx_imp;
-						surface.offsety = surfaceimgoffsety_imp;
-						
-						if(dependencies) {
-							if(surfacebackgroundimgpath_imp != "none") {
-								surface.setSurfaceImage(surfacebackgroundimgpath_imp, surfacestretchbi_imp);
-							}
-						}
-						
-						//import widgets from the surface
-						XML[] elements = site.getChild("Widgets").getChildren();
-						
-						for(XML element : elements) {
-							String type_imp = element.getString("type");
-							
-							if(type_imp == "Button") {
-								String id_imp = element.getChild("id").getContent();
-								String sourcePath_imp = id_imp;
-								float xpos_imp = element.getChild("xpos").getFloatContent();
-								float ypos_imp = element.getChild("ypos").getFloatContent();
-								float xsize_imp = element.getChild("xsize").getFloatContent();
-								float ysize_imp = element.getChild("ysize").getFloatContent();
-								boolean round_imp = false;
-								if(element.getChild("xpos").getContent() == "true") {
-									round_imp = true;
-								}
-								else if(element.getChild("xpos").getContent() == "false") {
-									round_imp = false;
-								}
-								String text_imp = element.getChild("text").getContent();
-								float textSize_imp = element.getChild("textsize").getFloatContent();
-								int hotkey_imp = element.getChild("hotkey").getIntContent();
-								float textoffsetx_imp = element.getChild("textoffsetx").getFloatContent();
-								float textoffsety_imp = element.getChild("textoffsety").getFloatContent();
-								int backgroundcolor_imp = element.getChild("backgroundcolor").getIntContent();
-								int foregroundcolor_imp = element.getChild("foregroundcolor").getIntContent();
-								int overcolor_imp = element.getChild("overcolor").getIntContent();
-								int clickcolor_imp = element.getChild("clickcolor").getIntContent();
-								boolean active_imp = false;
-								if(element.getChild("active").getContent() == "true") {
-									active_imp = true;
-								}
-								else if(element.getChild("active").getContent() == "false") {
-									active_imp = false;
-								}
-								boolean visible_imp = false;
-								if(element.getChild("visible").getContent() == "true") {
-									visible_imp = true;
-								}
-								else if(element.getChild("visible").getContent() == "false") {
-									visible_imp = false;
-								}
-								int layer_imp = element.getChild("layer").getIntContent();
-								String tttext_imp = element.getChild("tooltip").getChild("tttext").getContent();
-								float tttextsize_imp = element.getChild("tooltip").getChild("tttextsize").getFloatContent();
-								float ttposx_imp = element.getChild("tooltip").getChild("ttposx").getFloatContent();
-								float ttposy_imp = element.getChild("tooltip").getChild("ttposy").getFloatContent();
-								float ttsizex_imp = element.getChild("tooltip").getChild("ttsizex").getFloatContent();
-								float ttsizey_imp = element.getChild("tooltip").getChild("ttsizey").getFloatContent();
-								int ttforeground_imp = element.getChild("tooltip").getChild("ttforeground").getIntContent();
-								int ttbackground_imp = element.getChild("tooltip").getChild("ttbackground").getIntContent();
-								boolean ttround_imp = false;
-								if(element.getChild("tooltip").getChild("roundtt").getContent() == "true") {
-									ttround_imp = true;
-								}
-								else if(element.getChild("tooltip").getChild("roundtt").getContent() == "false") {
-									ttround_imp = false;
-								}
-								float ttintervall_imp = element.getChild("tooltip").getChild("intervall").getFloatContent();
-								float tttextoffsetx_imp = element.getChild("tooltip").getChild("tttextoffsetx").getFloatContent();
-								float tttextoffsety_imp = element.getChild("tooltip").getChild("tttextoffsety").getFloatContent();
-								boolean ttenabled_imp = false;
-								if(element.getChild("tooltip").getChild("enabled").getContent() == "true") {
-									ttenabled_imp = true;
-								}
-								else if(element.getChild("tooltip").getChild("enabled").getContent() == "false") {
-									ttenabled_imp = false;
-								}
-								String olc_imp = "none", omc_imp = "none", orc_imp = "none";
-								if(dependencies) {
-									olc_imp = element.getChild("dependencies").getChild("onleftlcick").getContent();
-									omc_imp = element.getChild("dependencies").getChild("onmiddleclick").getContent();
-									orc_imp = element.getChild("dependencies").getChild("onrightclick").getContent();
-								}
-								
-								//create and add widget to world
-								Button b = new Button(this.REF);
-								b.ID = id_imp;
-								b.SOURCEPATH = id_imp;
-								b.positions[0] = xpos_imp;
-								b.positions[1] = ypos_imp;
-								b.sizes[0] = xsize_imp;
-								b.sizes[1] = ysize_imp;
-								b.round = round_imp;
-								b.text = text_imp;
-								b.textSize = textSize_imp;
-								if(hotkey_imp != -1) {
-									b.hotkey = hotkey_imp;
-								}
-								b.textoffset[0] = textoffsetx_imp;
-								b.textoffset[1] = textoffsety_imp;
-								b.background = backgroundcolor_imp;
-								b.foreground = foregroundcolor_imp;
-								b.overcolor = overcolor_imp;
-								b.clickcolor = clickcolor_imp;
-								b.active = active_imp;
-								b.visible = visible_imp;
-								b.LAYER = layer_imp;
-								if(tttext_imp != "none") {
-									b.tooltiptext = tttext_imp;
-									b.tooltiptextsize = tttextsize_imp;
-									b.ttpositions[0] = ttposx_imp;
-									b.ttpositions[1] = ttposy_imp;
-									b.ttsizes[0] = ttsizex_imp;
-									b.ttsizes[1] = ttsizey_imp;
-									b.ttforeground = ttforeground_imp;
-									b.ttbackground = ttbackground_imp;
-									b.roundtt = ttround_imp;
-									b.intervall = ttintervall_imp;
-									b.tttextoffset[0] = tttextoffsetx_imp;
-									b.tttextoffset[1] = tttextoffsety_imp;
-									b.tooltip_enabled = ttenabled_imp;
-								}
-								if(dependencies) {
-									if(olc_imp != "none") {
-										b.olc = olc_imp;
-									}
-									if(omc_imp != "none") {
-										b.omc = omc_imp;
-									}
-									if(orc_imp != "none") {
-										b.orc = orc_imp;
-									}
-								}
-								
-								surface.addWidget(b);
-							}
-							else if(type_imp == "Checkbox") {
-								String id_imp = element.getChild("id").getContent();
-								String sourcePath_imp = id_imp;
-								float xpos_imp = element.getChild("xpos").getFloatContent();
-								float ypos_imp = element.getChild("ypos").getFloatContent();
-								float xsize_imp = element.getChild("xsize").getFloatContent();
-								float ysize_imp = element.getChild("ysize").getFloatContent();
-								boolean round_imp = false;
-								if(element.getChild("xpos").getContent() == "true") {
-									round_imp = true;
-								}
-								else if(element.getChild("xpos").getContent() == "false") {
-									round_imp = false;
-								}
-								int hotkey_imp = element.getChild("hotkey").getIntContent();
-								String checktype_imp = element.getChild("checktype").getContent();
-								boolean state_imp = false;
-								if(element.getChild("state").getContent() == "true") {
-									state_imp = true;
-								}
-								else if(element.getChild("state").getContent() == "false") {
-									state_imp = false;
-								}
-								int backgroundcolor_imp = element.getChild("backgroundcolor").getIntContent();
-								int foregroundcolor_imp = element.getChild("foregroundcolor").getIntContent();
-								int overcolor_imp = element.getChild("overcolor").getIntContent();
-								int clickcolor_imp = element.getChild("clickcolor").getIntContent();
-								boolean active_imp = false;
-								if(element.getChild("active").getContent() == "true") {
-									active_imp = true;
-								}
-								else if(element.getChild("active").getContent() == "false") {
-									active_imp = false;
-								}
-								boolean visible_imp = false;
-								if(element.getChild("visible").getContent() == "true") {
-									visible_imp = true;
-								}
-								else if(element.getChild("visible").getContent() == "false") {
-									visible_imp = false;
-								}
-								int layer_imp = element.getChild("layer").getIntContent();
-								String tttext_imp = element.getChild("tooltip").getChild("tttext").getContent();
-								float tttextsize_imp = element.getChild("tooltip").getChild("tttextsize").getFloatContent();
-								float ttposx_imp = element.getChild("tooltip").getChild("ttposx").getFloatContent();
-								float ttposy_imp = element.getChild("tooltip").getChild("ttposy").getFloatContent();
-								float ttsizex_imp = element.getChild("tooltip").getChild("ttsizex").getFloatContent();
-								float ttsizey_imp = element.getChild("tooltip").getChild("ttsizey").getFloatContent();
-								int ttforeground_imp = element.getChild("tooltip").getChild("ttforeground").getIntContent();
-								int ttbackground_imp = element.getChild("tooltip").getChild("ttbackground").getIntContent();
-								boolean ttround_imp = false;
-								if(element.getChild("tooltip").getChild("roundtt").getContent() == "true") {
-									ttround_imp = true;
-								}
-								else if(element.getChild("tooltip").getChild("roundtt").getContent() == "false") {
-									ttround_imp = false;
-								}
-								float ttintervall_imp = element.getChild("tooltip").getChild("intervall").getFloatContent();
-								float tttextoffsetx_imp = element.getChild("tooltip").getChild("tttextoffsetx").getFloatContent();
-								float tttextoffsety_imp = element.getChild("tooltip").getChild("tttextoffsety").getFloatContent();
-								boolean ttenabled_imp = false;
-								if(element.getChild("tooltip").getChild("enabled").getContent() == "true") {
-									ttenabled_imp = true;
-								}
-								else if(element.getChild("tooltip").getChild("enabled").getContent() == "false") {
-									ttenabled_imp = false;
-								}
-								String oc_imp = "none", ou_imp = "none";
-								if(dependencies) {
-									oc_imp = element.getChild("dependencies").getChild("oncheck").getContent();
-									ou_imp = element.getChild("dependencies").getChild("onuncheck").getContent();
-								}
-								
-								//create and add Widget to world
-								Checkbox c = new Checkbox(this.REF);
-								c.ID = id_imp;
-								c.SOURCEPATH = id_imp;
-								c.positions[0] = xpos_imp;
-								c.positions[1] = ypos_imp;
-								c.sizes[0] = xsize_imp;
-								c.sizes[1] = ysize_imp;
-								c.round = round_imp;
-								if(hotkey_imp != -1) {
-									c.hotkey = hotkey_imp;
-								}
-								c.setChecktype(checktype_imp);
-								c.state = state_imp;
-								c.background = backgroundcolor_imp;
-								c.foreground = foregroundcolor_imp;
-								c.overcolor = overcolor_imp;
-								c.clickcolor = clickcolor_imp;
-								c.active = active_imp;
-								c.visible = visible_imp;
-								c.LAYER = layer_imp;
-								if(tttext_imp != "none") {
-									c.tooltiptext = tttext_imp;
-									c.tooltiptextsize = tttextsize_imp;
-									c.ttpositions[0] = ttposx_imp;
-									c.ttpositions[1] = ttposy_imp;
-									c.ttsizes[0] = ttsizex_imp;
-									c.ttsizes[1] = ttsizey_imp;
-									c.ttforeground = ttforeground_imp;
-									c.ttbackground = ttbackground_imp;
-									c.roundtt = ttround_imp;
-									c.intervall = ttintervall_imp;
-									c.tttextoffset[0] = tttextoffsetx_imp;
-									c.tttextoffset[1] = tttextoffsety_imp;
-									c.tooltip_enabled = ttenabled_imp;
-								}
-								if(dependencies) {
-									if(oc_imp != "none") {
-										c.oc = oc_imp;
-									}
-									if(ou_imp != "none") {
-										c.ou = ou_imp;
-									}
-								}
-								
-								surface.addWidget(c);
-							}
-							else if(type_imp == "Label") {
-								String id_imp = element.getChild("id").getContent();
-								String sourcePath_imp = id_imp;
-								float xpos_imp = element.getChild("xpos").getFloatContent();
-								float ypos_imp = element.getChild("ypos").getFloatContent();
-								float xsize_imp = element.getChild("xsize").getFloatContent();
-								float ysize_imp = element.getChild("ysize").getFloatContent();
-								boolean round_imp = false;
-								if(element.getChild("xpos").getContent() == "true") {
-									round_imp = true;
-								}
-								else if(element.getChild("xpos").getContent() == "false") {
-									round_imp = false;
-								}
-								String text_imp = element.getChild("text").getContent();
-								float textSize_imp = element.getChild("textsize").getFloatContent();
-								float textoffsetx_imp = element.getChild("textoffsetx").getFloatContent();
-								float textoffsety_imp = element.getChild("textoffsety").getFloatContent();
-								int backgroundcolor_imp = element.getChild("backgroundcolor").getIntContent();
-								int foregroundcolor_imp = element.getChild("foregroundcolor").getIntContent();
-								boolean active_imp = false;
-								if(element.getChild("active").getContent() == "true") {
-									active_imp = true;
-								}
-								else if(element.getChild("active").getContent() == "false") {
-									active_imp = false;
-								}
-								boolean visible_imp = false;
-								if(element.getChild("visible").getContent() == "true") {
-									visible_imp = true;
-								}
-								else if(element.getChild("visible").getContent() == "false") {
-									visible_imp = false;
-								}
-								int layer_imp = element.getChild("layer").getIntContent();
-								
-								//create and add widget to world
-								Label l = new Label(this.REF);
-								l.ID = id_imp;
-								l.SOURCEPATH = id_imp;
-								l.positions[0] = xpos_imp;
-								l.positions[1] = ypos_imp;
-								l.sizes[0] = xsize_imp;
-								l.sizes[1] = ysize_imp;
-								l.round = round_imp;
-								l.text = text_imp;
-								l.textSize = textSize_imp;
-								l.textoffset[0] = textoffsetx_imp;
-								l.textoffset[1] = textoffsety_imp;
-								l.background = backgroundcolor_imp;
-								l.foreground = foregroundcolor_imp;
-								l.visible = visible_imp;
-								l.LAYER = layer_imp;
-								
-								surface.addWidget(l);
-							}
-							else if(type_imp == "Inputfield") {
-								String id_imp = element.getChild("id").getContent();
-								String sourcePath_imp = id_imp;
-								float xpos_imp = element.getChild("xpos").getFloatContent();
-								float ypos_imp = element.getChild("ypos").getFloatContent();
-								float xsize_imp = element.getChild("xsize").getFloatContent();
-								float ysize_imp = element.getChild("ysize").getFloatContent();
-								boolean round_imp = false;
-								if(element.getChild("xpos").getContent() == "true") {
-									round_imp = true;
-								}
-								else if(element.getChild("xpos").getContent() == "false") {
-									round_imp = false;
-								}
-								String inputtext_imp = element.getChild("inputtext").getContent();
-								String greyedtext_imp = element.getChild("greyedtext").getContent();
-								float textSize_imp = element.getChild("textsize").getFloatContent();
-								int hotkey_imp = element.getChild("hotkey").getIntContent();
-								float textoffsetx_imp = element.getChild("textoffsetx").getFloatContent();
-								float textoffsety_imp = element.getChild("textoffsety").getFloatContent();
-								int backgroundcolor_imp = element.getChild("backgroundcolor").getIntContent();
-								int foregroundcolor_imp = element.getChild("foregroundcolor").getIntContent();
-								int overcolor_imp = element.getChild("overcolor").getIntContent();
-								int inputcolor_imp = element.getChild("inputcolor").getIntContent();
-								int greyedtextcolor_imp = element.getChild("greyedttextcolor").getIntContent();
-								int limitinputtext_imp = element.getChild("limitinputtext").getIntContent();
-								boolean active_imp = false;
-								if(element.getChild("active").getContent() == "true") {
-									active_imp = true;
-								}
-								else if(element.getChild("active").getContent() == "false") {
-									active_imp = false;
-								}
-								boolean visible_imp = false;
-								if(element.getChild("visible").getContent() == "true") {
-									visible_imp = true;
-								}
-								else if(element.getChild("visible").getContent() == "false") {
-									visible_imp = false;
-								}
-								int layer_imp = element.getChild("layer").getIntContent();
-								String tttext_imp = element.getChild("tooltip").getChild("tttext").getContent();
-								float tttextsize_imp = element.getChild("tooltip").getChild("tttextsize").getFloatContent();
-								float ttposx_imp = element.getChild("tooltip").getChild("ttposx").getFloatContent();
-								float ttposy_imp = element.getChild("tooltip").getChild("ttposy").getFloatContent();
-								float ttsizex_imp = element.getChild("tooltip").getChild("ttsizex").getFloatContent();
-								float ttsizey_imp = element.getChild("tooltip").getChild("ttsizey").getFloatContent();
-								int ttforeground_imp = element.getChild("tooltip").getChild("ttforeground").getIntContent();
-								int ttbackground_imp = element.getChild("tooltip").getChild("ttbackground").getIntContent();
-								boolean ttround_imp = false;
-								if(element.getChild("tooltip").getChild("roundtt").getContent() == "true") {
-									ttround_imp = true;
-								}
-								else if(element.getChild("tooltip").getChild("roundtt").getContent() == "false") {
-									ttround_imp = false;
-								}
-								float ttintervall_imp = element.getChild("tooltip").getChild("intervall").getFloatContent();
-								float tttextoffsetx_imp = element.getChild("tooltip").getChild("tttextoffsetx").getFloatContent();
-								float tttextoffsety_imp = element.getChild("tooltip").getChild("tttextoffsety").getFloatContent();
-								boolean ttenabled_imp = false;
-								if(element.getChild("tooltip").getChild("enabled").getContent() == "true") {
-									ttenabled_imp = true;
-								}
-								else if(element.getChild("tooltip").getChild("enabled").getContent() == "false") {
-									ttenabled_imp = false;
-								}
-								
-								//create widget and add to world
-								Inputfield i = new Inputfield(this.REF);
-								i.ID = id_imp;
-								i.SOURCEPATH = id_imp;
-								i.positions[0] = xpos_imp;
-								i.positions[1] = ypos_imp;
-								i.sizes[0] = xsize_imp;
-								i.sizes[1] = ysize_imp;
-								i.round = round_imp;
-								i.input_text = inputtext_imp;
-								i.greyText = greyedtext_imp;
-								i.textSize = textSize_imp;
-								if(hotkey_imp != -1) {
-									i.hotkey = hotkey_imp;
-								}
-								i.textoffset[0] = textoffsetx_imp;
-								i.textoffset[1] = textoffsety_imp;
-								i.background = backgroundcolor_imp;
-								i.foreground = foregroundcolor_imp;
-								i.input_color = inputcolor_imp;
-								i.gt_color = greyedtextcolor_imp;
-								i.limit_input_length = limitinputtext_imp;
-								i.active = active_imp;
-								i.visible = visible_imp;
-								i.LAYER = layer_imp;
-								if(tttext_imp != "none") {
-									i.tooltiptext = tttext_imp;
-									i.tooltiptextsize = tttextsize_imp;
-									i.ttpositions[0] = ttposx_imp;
-									i.ttpositions[1] = ttposy_imp;
-									i.ttsizes[0] = ttsizex_imp;
-									i.ttsizes[1] = ttsizey_imp;
-									i.ttforeground = ttforeground_imp;
-									i.ttbackground = ttbackground_imp;
-									i.roundtt = ttround_imp;
-									i.intervall = ttintervall_imp;
-									i.tttextoffset[0] = tttextoffsetx_imp;
-									i.tttextoffset[1] = tttextoffsety_imp;
-									i.tooltip_enabled = ttenabled_imp;
-								}
-								
-								surface.addWidget(i);
-							}
-							else if(type_imp == "BB_Image") {
-								String id_imp = element.getChild("id").getContent();
-								String sourcePath_imp = id_imp;
-								float xpos_imp = element.getChild("xpos").getFloatContent();
-								float ypos_imp = element.getChild("ypos").getFloatContent();
-								float xsize_imp = element.getChild("xsize").getFloatContent();
-								float ysize_imp = element.getChild("ysize").getFloatContent();
-								boolean active_imp = false;
-								if(element.getChild("active").getContent() == "true") {
-									active_imp = true;
-								}
-								else if(element.getChild("active").getContent() == "false") {
-									active_imp = false;
-								}
-								boolean visible_imp = false;
-								if(element.getChild("visible").getContent() == "true") {
-									visible_imp = true;
-								}
-								else if(element.getChild("visible").getContent() == "false") {
-									visible_imp = false;
-								}
-								int layer_imp = element.getChild("layer").getIntContent();
-								
-								String tttext_imp = element.getChild("tooltip").getChild("tttext").getContent();
-								float tttextsize_imp = element.getChild("tooltip").getChild("tttextsize").getFloatContent();
-								float ttposx_imp = element.getChild("tooltip").getChild("ttposx").getFloatContent();
-								float ttposy_imp = element.getChild("tooltip").getChild("ttposy").getFloatContent();
-								float ttsizex_imp = element.getChild("tooltip").getChild("ttsizex").getFloatContent();
-								float ttsizey_imp = element.getChild("tooltip").getChild("ttsizey").getFloatContent();
-								int ttforeground_imp = element.getChild("tooltip").getChild("ttforeground").getIntContent();
-								int ttbackground_imp = element.getChild("tooltip").getChild("ttbackground").getIntContent();
-								boolean ttround_imp = false;
-								if(element.getChild("tooltip").getChild("roundtt").getContent() == "true") {
-									ttround_imp = true;
-								}
-								else if(element.getChild("tooltip").getChild("roundtt").getContent() == "false") {
-									ttround_imp = false;
-								}
-								float ttintervall_imp = element.getChild("tooltip").getChild("intervall").getFloatContent();
-								float tttextoffsetx_imp = element.getChild("tooltip").getChild("tttextoffsetx").getFloatContent();
-								float tttextoffsety_imp = element.getChild("tooltip").getChild("tttextoffsety").getFloatContent();
-								boolean ttenabled_imp = false;
-								if(element.getChild("tooltip").getChild("enabled").getContent() == "true") {
-									ttenabled_imp = true;
-								}
-								else if(element.getChild("tooltip").getChild("enabled").getContent() == "false") {
-									ttenabled_imp = false;
-								}
-								String imgsourcepath_imp = "none";
-								if(dependencies) {
-									imgsourcepath_imp = element.getChild("dependencies").getChild("sourceimg").getContent();
-								}
-								
-								//create widget and add to world(image cant be created and added without image dependency)
-								if(dependencies) {
-									BB_Image bi = new BB_Image(this.REF);
-									bi.ID = id_imp;
-									bi.SOURCEPATH = id_imp;
-									bi.IMG = this.REF.loadImage(imgsourcepath_imp);
-									
-									//get crops
-									XML[] crops = element.getChild("crops").getChildren();
-									for(XML crop : crops) {
-										String cropstring = crop.getContent();
-										String edge = cropstring.split(",")[0];
-										int pixel_amount = Integer.parseInt(cropstring.split(",")[1]);
-										bi.addCrop(edge, pixel_amount);
-									}
-									
-									//execute crops
-									bi.executeCrops();
-									
-									bi.positions[0] = xpos_imp;
-									bi.positions[1] = ypos_imp;
-									bi.sizes[0] = xsize_imp;
-									bi.sizes[1] = ysize_imp;
-									bi.active = active_imp;
-									bi.visible = visible_imp;
-									bi.LAYER = layer_imp;
-									if(tttext_imp != "none") {
-										bi.tooltiptext = tttext_imp;
-										bi.tooltiptextsize = tttextsize_imp;
-										bi.ttpositions[0] = ttposx_imp;
-										bi.ttpositions[1] = ttposy_imp;
-										bi.ttsizes[0] = ttsizex_imp;
-										bi.ttsizes[1] = ttsizey_imp;
-										bi.ttforeground = ttforeground_imp;
-										bi.ttbackground = ttbackground_imp;
-										bi.roundtt = ttround_imp;
-										bi.intervall = ttintervall_imp;
-										bi.tttextoffset[0] = tttextoffsetx_imp;
-										bi.tttextoffset[1] = tttextoffsety_imp;
-										bi.tooltip_enabled = ttenabled_imp;
-									}
-									
-									surface.addWidget(bi);
-								}
-							}
-						}
-						
-						//add surface to the world
-						this.addSurface(surface);
-					}
-				}
-				
-				//logging 
-				boolean logging_imp = false;
-				int loglevel_imp = 0;
-				String rellogpath_imp = "data/log.txt";
-				if(importxml.getChild("Settings").getChild("logging").getContent() == "true") {
-					logging_imp = true;
-				}
-				else if(importxml.getChild("Settings").getChild("logging").getContent() == "false") {
-					logging_imp = false;
-				}
-				
-				loglevel_imp = importxml.getChild("Settings").getChild("loglevel").getIntContent();
-				
-				rellogpath_imp = importxml.getChild("Settings").getChild("rellogpath").getContent();
-				
-				if(logging_imp) {
-					this.enableLogging(loglevel_imp, rellogpath_imp);
-				}
-				
-				//set the renderpage
-				String renderpageid_imp = importxml.getChild("Settings").getChild("renderpage").getContent();
-				boolean found = false;
-				for(BeastySurface b : this.surfaces) {
-					if(b.ID.equals(renderpageid_imp)) {
-						this.renderpage = b;
-						found = true;
-					}
-				}
-				if(!found) {
-					throw new RuntimeException("Import Error: Could not find a matching ID for the renderpage");
-				}
-				
-				
-				//set the handlers
-				String handler_imp = importxml.getChild("Settings").getChild("handlers").getContent();
-				String[] handlers_imp = handler_imp.split(",");
-				if(handlers_imp[0].equals("true")) {
-					BeastyWorld.HANDLERS[0] = true;
-				}
-				else if(handlers_imp[0].equals("false")) {
-					BeastyWorld.HANDLERS[0] = false;
-				}
-				if(handlers_imp[1].equals("true")) {
-					BeastyWorld.HANDLERS[1] = true;
-				}
-				else if(handlers_imp[1].equals("false")) {
-					BeastyWorld.HANDLERS[1] = false;
-				}
-				if(handlers_imp[2].equals("true")) {
-					BeastyWorld.HANDLERS[2] = true;
-				}
-				else if(handlers_imp[2].equals("false")) {
-					BeastyWorld.HANDLERS[2] = false;
-				}
-				
-				//set the background disable
-				if(importxml.getChild("Settings").getChild("backgrounddisable").getContent() == "true") {
-					this.disable_background = true;
-				}
-				else if(importxml.getChild("Settings").getChild("backgrounddisable").getContent() == "false") {
-					this.disable_background = false;
-				}
-				
-				//set the backgroundcolor
-				int backgroundcolor_imp = importxml.getChild("Settings").getChild("backgroundcolor").getIntContent();
-				this.BACKGROUNDCOLOR = backgroundcolor_imp;
-				
-				//set the surface title
-				if(importxml.getChild("Settings").getChild("windowtitle").getContent() != "default") {
-					String title = importxml.getChild("Settings").getChild("windowtitle").getContent();
-					this.setWindowName(title);
-				}
-				
-				if(dependencies) {
-					if(importxml.getChild("Settings").getChild("dependencies").getChild("iconpath").getContent() != "default") {
-						String imgpath_imp = importxml.getChild("Settings").getChild("dependencies").getChild("iconpath").getContent();
-						this.setWindowIcon(imgpath_imp);
-					}
-				}
-				
-				//check the mode if it matches at the end and then throw error if not
-				String wm_imp = importxml.getChild("Settings").getChild("widgetmode").getContent();
-				String wm = "";
-				if(this.MODE == WidgetMode.WIDGET) {
-					wm = "widget";
-				}
-				else if(this.MODE == WidgetMode.SURFACE) {
-					wm = "surface";
-				}
-				if(wm_imp != wm) {
-					throw new RuntimeException("Import Error: Widgetmode does not match with import");
-				}
+			if(!path.split(".")[1].equals("beasty")) {
+				throw new RuntimeException("unknown import file type");
+			}
+			
+			XML importxml = this.REF.loadXML(path);
+			
+			String bb_version = importxml.getChild("System").getChild("bbversion").getContent();
+			if(!Info.version().equals(bb_version)) {
+				PApplet.println("WARNING(BB): BEASTYBUTTONS VERSION DOES NOT MATCH THE VERSION THE FILE WAS EXPORTED WITH, THIS MIGHT CAUSE ERRORS");
+			}
+			
+			int sketchimpx = importxml.getChild("Sketch").getChild("exportresx").getIntContent();
+			int sketchimpy = importxml.getChild("Sketch").getChild("exportresy").getIntContent();
+			if(this.REF.width != sketchimpx || this.REF.height != sketchimpy) {
+				throw new RuntimeException("Import Error: Import file does not match the Sketch Resolution");
+			}
+			
+			String w_mode = importxml.getChild("Settings").getChild("widgetmode").getContent();
+			if(this.MODE == WidgetMode.WIDGET && w_mode.equals("surface")) {
+				PApplet.println("WARNING(BB): IMPORT FILE DOES NOT MATCH CURRENT WIDGETMODE, WIDGETS MIGHT BE IGNORED");
+			}
+			else if(this.MODE == WidgetMode.SURFACE && w_mode.equals("widget")) {
+				PApplet.println("WARNING(BB): IMPORT FILE DOES NOT MATCH CURRENT WIDGETMODE, WIDGETS MIGHT BE IGNORED");
 			}
 			else {
-				throw new RuntimeException("unknown filetype to import, can only import .beasty files");
+				if(w_mode.equals("widget")) {
+					this.MODE = WidgetMode.WIDGET;
+				}
+				else if(w_mode.equals("surface")) {
+					this.MODE = WidgetMode.SURFACE;
+				}
 			}
+			
+			if(importxml.getChild("Settings").getChild("logging").getContent().equals("true")) {
+				this.logging = true;
+			}
+			else if(importxml.getChild("Settings").getChild("logging").getContent().equals("false")) {
+				this.logging = false;
+			}
+			
+			this.loglevel = Integer.parseInt(importxml.getChild("Settings").getChild("loglevel").getContent());
+			
+			this.rel_path = importxml.getChild("Settings").getChild("rellogpath").getContent();
+			
+			String h1 = "false", h2 = "false", h3 = "false";
+			String h_str = importxml.getChild("Settings").getChild("handlers").getContent();
+			h1 = h_str.split(",")[0];
+			h2 = h_str.split(",")[1];
+			h3 = h_str.split(",")[2];
+			
+			if(h1.equals("true")) {
+				BeastyWorld.HANDLERS[0] = true;
+			}
+			else if(h1.equals("false")) {
+				BeastyWorld.HANDLERS[0] = false;
+			}
+			
+			if(h2.equals("true")) {
+				BeastyWorld.HANDLERS[1] = true;
+			}
+			else if(h2.equals("false")) {
+				BeastyWorld.HANDLERS[1] = false;
+			}
+			
+			if(h3.equals("true")) {
+				BeastyWorld.HANDLERS[2] = true;
+			}
+			else if(h3.equals("false")) {
+				BeastyWorld.HANDLERS[2] = false;
+			}
+			
+			if(importxml.getChild("Settings").getChild("backgrounddisable").getContent().equals("true")) {
+				this.disable_background = true;
+			}
+			else if(importxml.getChild("Settings").getChild("backgrounddisable").getContent().equals("false")) {
+				this.disable_background = false;
+			}
+			
+			this.BACKGROUNDCOLOR = importxml.getChild("Settings").getChild("backgroundcolor").getIntContent();
+			
+			if(!importxml.getChild("Settings").getChild("windowtitle").getContent().equals("default")) {
+				String wt = importxml.getChild("Settings").getChild("windowtitle").getContent();
+				this.setWindowName(wt);
+			}
+			
+			XML printout_tag = importxml.getChild("Settings").getChild("printouts");
+			XML[] po_children = printout_tag.getChildren();
+			
+			PApplet.println("");
+			PApplet.println("********Import-Details********");
+			for(XML c : po_children) {
+				PApplet.println(c.getContent());
+			}
+			PApplet.println("******************************");
+			PApplet.println("");
+			
+			if(dependencies) {
+				XML dependencies_tag = importxml.getChild("Settings").getChild("dependencies");
+				if(!dependencies_tag.getChild("iconpath").getContent().equals("default")) {
+					String ip = dependencies_tag.getChild("iconpath").getContent();
+					this.setWindowIcon(ip);
+				}
+				
+				if(!dependencies_tag.getChild("ttfontpath").getContent().equals("default")) {
+					String ttfp = dependencies_tag.getChild("ttfontpath").getContent();
+					this.setTooltipFont(ttfp);
+				}
+				
+				if(!dependencies_tag.getChild("fontpath").getContent().equals("default")) {
+					String fp = dependencies_tag.getChild("fontpath").getContent();
+					this.setFont(fp);
+				}
+			}
+			
+			if(w_mode.equals("widget")) {
+				XML imp_widgets_tag = importxml.getChild("Layout").getChild("Settings");
+				XML[] imp_widget_tags = imp_widgets_tag.getChildren();
+				
+				for(XML widget_xml : imp_widget_tags) {
+					if(widget_xml.getString("type").equals("Button")) {
+						Button b = new Button(this.REF);
+						
+						b.ID = widget_xml.getChild("id").getContent();
+						b.positions[0] = widget_xml.getChild("xpos").getFloatContent();
+						b.positions[1] = widget_xml.getChild("ypos").getFloatContent();
+						b.sizes[0] = widget_xml.getChild("xsize").getFloatContent();
+						b.sizes[1] = widget_xml.getChild("ysize").getFloatContent();
+						
+						if(widget_xml.getChild("round").getContent().equals("true")) {
+							b.round = true;
+						}
+						else if(widget_xml.getChild("round").getContent().equals("false")) {
+							b.round = false;
+						}
+						
+						b.text = widget_xml.getChild("text").getContent();
+						b.textSize = widget_xml.getChild("textsize").getFloatContent();
+						b.outline = widget_xml.getChild("outline").getFloatContent();
+						if(!widget_xml.getChild("hotkey").getContent().equals("none")) {
+							b.hotkey = widget_xml.getChild("round").getIntContent();
+						}
+						
+						b.tttextoffset[0] = widget_xml.getChild("textoffsetx").getFloatContent();
+						b.tttextoffset[1] = widget_xml.getChild("textoffsety").getFloatContent();
+						
+						b.background = widget_xml.getChild("backgroundcolor").getIntContent();
+						b.foreground = widget_xml.getChild("foregroundcolor").getIntContent();
+						b.overcolor = widget_xml.getChild("overcolor").getIntContent();
+						b.clickcolor = widget_xml.getChild("clickcolor").getIntContent();
+						
+						if(widget_xml.getChild("active").getContent().equals("true")) {
+							b.active = true;
+						}
+						else if(widget_xml.getChild("active").getContent().equals("false")) {
+							b.active = false;
+						}
+						
+						if(widget_xml.getChild("visible").getContent().equals("true")) {
+							b.visible = true;
+						}
+						else if(widget_xml.getChild("visible").getContent().equals("false")) {
+							b.visible = false;
+						}
+						if(!widget_xml.getChild("tooltip").getChild("tttext").getContent().equals("none")) {
+							b.tooltiptext = widget_xml.getChild("tooltip").getChild("tttext").getContent();
+						}
+						if(!widget_xml.getChild("tooltip").getChild("tttextsize").getContent().equals("none")) {
+							b.tooltiptextsize = widget_xml.getChild("tooltip").getChild("tttextsize").getFloatContent();
+						}
+						b.ttpositions[0] = widget_xml.getChild("tooltip").getChild("ttposx").getFloatContent();
+						b.ttpositions[1] = widget_xml.getChild("tooltip").getChild("ttposy").getFloatContent();
+						b.ttsizes[0] = widget_xml.getChild("tooltip").getChild("ttsizex").getFloatContent();
+						b.ttsizes[1] = widget_xml.getChild("tooltip").getChild("ttsizey").getFloatContent();
+						b.ttforeground = widget_xml.getChild("tooltip").getChild("ttforeground").getIntContent();
+						b.ttbackground = widget_xml.getChild("tooltip").getChild("ttbackground").getIntContent();
+						
+						if(widget_xml.getChild("tooltip").getChild("roundtt").getContent().equals("true")) {
+							b.roundtt = true;
+						}
+						else if(widget_xml.getChild("tooltip").getChild("roundtt").getContent().equals("false")) {
+							b.roundtt = false;
+						}
+						
+						b.intervall = widget_xml.getChild("tooltip").getChild("intervall").getFloatContent();
+						b.tttextoffset[0] = widget_xml.getChild("tooltip").getChild("tttextoffsetx").getFloatContent();
+						b.tttextoffset[1] = widget_xml.getChild("tooltip").getChild("tttextoffsety").getFloatContent();
+						
+						if(widget_xml.getChild("tooltip").getChild("enabled").getContent().equals("true")) {
+							b.tooltip_enabled = true;
+						}
+						else if(widget_xml.getChild("tooltip").getChild("enabled").getContent().equals("false")) {
+							b.tooltip_enabled = false;
+						}
+						
+						if(dependencies) {
+							if(!widget_xml.getChild("dependencies").getChild("onleftclick").getContent().equals("none")) {
+								b.olc = widget_xml.getChild("dependencies").getChild("onleftclick").getContent();
+							}
+							
+							if(!widget_xml.getChild("dependencies").getChild("onmiddleclick").getContent().equals("none")) {
+								b.omc = widget_xml.getChild("dependencies").getChild("onmiddleclick").getContent();
+							}
+							
+							if(!widget_xml.getChild("dependencies").getChild("onrightclick").getContent().equals("none")) {
+								b.orc = widget_xml.getChild("dependencies").getChild("onrightclick").getContent();
+							}
+							
+							if(!widget_xml.getChild("dependencies").getChild("fontpath").getContent().equals("default")) {
+								String fpath = widget_xml.getChild("dependencies").getChild("fontpath").getContent();
+								b.setFont(fpath);
+							}
+							
+							if(!widget_xml.getChild("dependencies").getChild("ttfontpath").getContent().equals("default")) {
+								String ttfpath = widget_xml.getChild("dependencies").getChild("ttfontpath").getContent();
+								b.setTooltipFont(ttfpath);
+							}
+						}
+					}
+					else if(widget_xml.getString("type").equals("Checkbox")) {
+						
+					}
+				}
+			}
+			else if(w_mode.equals("surface")) {
+				String imp_renderpage = importxml.getChild("Settings").getChild("renderpage").getContent();
+				
+				
+				
+				//set renderpage to imp_renderpage
+				this.renderpage = this.get_surface_by_id(imp_renderpage);
+			}
+			
 		}
-		catch (Exception e) {
-			e.printStackTrace();
-			throw new RuntimeException("an error occured while importing");
+		catch(Exception e) {
+			PApplet.println("WARNING(BB): COULD NOT IMPORT LAYOUT -> CONTINUEING WITHOUT IMPORTING");
 		}
 	}
 	
@@ -3284,17 +2444,19 @@ public class BeastyWorld
 				if(e.getAction() == MouseEvent.PRESS) {
 					if(this.MODE == WidgetMode.WIDGET) {
 						for(Widget w : this.widgets) {
-							if(w instanceof Button || w instanceof Checkbox) {
+							if(w instanceof Button || w instanceof Checkbox || w instanceof Inputfield) {
 								if(w.over(e.getX(), e.getY())) {
 									if(w.active) {
 										w.rendercolor = w.clickcolor;
 										//w.trueClick = true;
+										w.mouse_pressed_down_over = true;
 									}
 								}
 								else {
 									if(w.active) {
 										w.rendercolor = w.background;
 										//w.trueClick = false;
+										w.mouse_pressed_down_over = false;
 									}
 								}
 							}
@@ -3302,17 +2464,19 @@ public class BeastyWorld
 					}
 					else if(this.MODE == WidgetMode.SURFACE) {
 						for(Widget w : this.renderpage.widgets) {
-							if(w instanceof Button || w instanceof Checkbox) {
+							if(w instanceof Button || w instanceof Checkbox || w instanceof Inputfield) {
 								if(w.over(e.getX(), e.getY())) {
 									if(w.active) {
 										w.rendercolor = w.clickcolor;
 										//w.trueClick = true;
+										w.mouse_pressed_down_over = true;
 									}
 								}
 								else {
 									if(w.active) {
 										w.rendercolor = w.background;
 										//w.trueClick = false;
+										w.mouse_pressed_down_over = false;
 									}
 								}
 							}
@@ -3329,12 +2493,14 @@ public class BeastyWorld
 									if(w.active) {
 										w.rendercolor = w.clickcolor;
 										//w.trueClick = true;
+										//w.mouse_pressed_down_over = true;
 									}
 								}
 								else {
 									if(w.active) {
 										w.rendercolor = w.background;
 										//w.trueClick = false;
+										//w.mouse_pressed_down_over = false;
 									}
 								}
 							}
@@ -3347,12 +2513,14 @@ public class BeastyWorld
 									if(w.active) {
 										w.rendercolor = w.clickcolor;
 										//w.trueClick = true;
+										//w.mouse_pressed_down_over = true;
 									}
 								}
 								else {
 									if(w.active) {
 										w.rendercolor = w.background;
 										//w.trueClick = false;
+										//w.mouse_pressed_down_over = false;
 									}
 								}
 							}
@@ -3370,135 +2538,154 @@ public class BeastyWorld
 									//left button
 									if(e.getButton() == PConstants.LEFT) {	
 										if(w instanceof Button) {
-											Button b = (Button)w;
-											b.clicks_since_start+=1;
-											if(this.logging) {
-												this.writelogline(b.ID, "Button", "(mousehandler)left clicked");
-											}
-											if(b.olc != null) {
-												this.REF.method(b.olc);
-												//PApplet.println("Widget one");
+											if(w.mouse_pressed_down_over) {
+												Button b = (Button)w;
+												b.clicks_since_start+=1;
+												if(this.logging) {
+													this.writelogline(b.ID, "Button", "(mousehandler)left clicked");
+												}
+												if(b.olc != null) {
+													this.REF.method(b.olc);
+													//PApplet.println("Widget one");
+												}
 											}
 										}
 										else if(w instanceof Checkbox) {
-											Checkbox c = (Checkbox)w;
-											c.clicks_since_start+=1;
-											if(c.state) {
-												c.state = !c.state;
-												if(this.logging) {
-													this.writelogline(c.ID, "Checkbox", "(mousehandler)unchecked");
+											if(w.mouse_pressed_down_over) {
+												Checkbox c = (Checkbox)w;
+												c.clicks_since_start+=1;
+												if(c.state) {
+													c.state = !c.state;
+													if(this.logging) {
+														this.writelogline(c.ID, "Checkbox", "(mousehandler)unchecked");
+													}
+													if(c.ou != null) {
+														this.REF.method(c.ou);
+													}
 												}
-												if(c.ou != null) {
-													this.REF.method(c.ou);
-												}
-											}
-											else {
-												c.state = !c.state;
-												if(this.logging) {
-													this.writelogline(c.ID, "Checkbox", "(mousehandler)checked");
-												}
-												if(c.oc != null) {
-													this.REF.method(c.oc);
+												else {
+													c.state = !c.state;
+													if(this.logging) {
+														this.writelogline(c.ID, "Checkbox", "(mousehandler)checked");
+													}
+													if(c.oc != null) {
+														this.REF.method(c.oc);
+													}
 												}
 											}
 										}
 										else if(w instanceof Inputfield) {
-											Inputfield i = (Inputfield)w;
-											i.clicks_since_start++;
-											if(this.logging) {
-												this.writelogline(i.ID, "Inputfield", "(mousehandler)input activated");
+											if(w.mouse_pressed_down_over) {
+												Inputfield i = (Inputfield)w;
+												i.clicks_since_start++;
+												if(this.logging) {
+													this.writelogline(i.ID, "Inputfield", "(mousehandler)input activated");
+												}
+												i.input = true;
 											}
-											i.input = true;
 										}
 									}
 									
 									//middle button
 									else if(e.getButton() == PConstants.CENTER) {
 										if(w instanceof Button) {
-											Button b = (Button)w;
-											b.clicks_since_start+=1;
-											if(this.logging) {
-												this.writelogline(b.ID, "Button", "(mousehandler)middle clicked");
-											}
-											if(b.omc != null) {
-												this.REF.method(b.omc);
+											if(w.mouse_pressed_down_over) {
+												Button b = (Button)w;
+												b.clicks_since_start+=1;
+												if(this.logging) {
+													this.writelogline(b.ID, "Button", "(mousehandler)middle clicked");
+												}
+												if(b.omc != null) {
+													this.REF.method(b.omc);
+												}
 											}
 										}
 										else if(w instanceof Checkbox) {
-											Checkbox c = (Checkbox)w;
-											c.clicks_since_start+=1;
-											if(c.state) {
-												c.state = !c.state;
-												if(this.logging) {
-													this.writelogline(c.ID, "Checkbox", "(mousehandler)unchecked");
+											if(w.mouse_pressed_down_over) {
+												Checkbox c = (Checkbox)w;
+												c.clicks_since_start+=1;
+												if(c.state) {
+													c.state = !c.state;
+													if(this.logging) {
+														this.writelogline(c.ID, "Checkbox", "(mousehandler)unchecked");
+													}
+													if(c.ou != null) {
+														this.REF.method(c.ou);
+													}
 												}
-												if(c.ou != null) {
-													this.REF.method(c.ou);
+												else {
+													c.state = !c.state;
+													if(this.logging) {
+														this.writelogline(c.ID, "Checkbox", "(mousehandler)checked");
+													}
+													if(c.oc != null) {
+														this.REF.method(c.oc);
+													}
 												}
 											}
-											else {
-												c.state = !c.state;
-												if(this.logging) {
-													this.writelogline(c.ID, "Checkbox", "(mousehandler)checked");
-												}
-												if(c.oc != null) {
-													this.REF.method(c.oc);
-												}
-											}	
 										}
 										else if(w instanceof Inputfield) {
-											Inputfield i = (Inputfield)w;
-											i.clicks_since_start++;
-											if(this.logging) {
-												this.writelogline(i.ID, "Inputfield", "(mousehandler)input activated");
+											if(w.mouse_pressed_down_over) {
+												Inputfield i = (Inputfield)w;
+												i.clicks_since_start++;
+												if(this.logging) {
+													this.writelogline(i.ID, "Inputfield", "(mousehandler)input activated");
+												}
+												i.input = true;
 											}
-											i.input = true;
 										}
 									}
 									
 									//right button
 									else if(e.getButton() == PConstants.RIGHT) {
 										if(w instanceof Button) {
-											Button b = (Button)w;
-											b.clicks_since_start+=1;
-											if(this.logging) {
-												this.writelogline(b.ID, "Button", "(mousehandler)right clicked");
-											}
-											if(b.orc != null) {
-												this.REF.method(b.orc);
+											if(w.mouse_pressed_down_over) {
+												Button b = (Button)w;
+												b.clicks_since_start+=1;
+												if(this.logging) {
+													this.writelogline(b.ID, "Button", "(mousehandler)right clicked");
+												}
+												if(b.orc != null) {
+													this.REF.method(b.orc);
+												}
 											}
 										}
 										else if (w instanceof Checkbox) {
-											Checkbox c = (Checkbox)w;
-											c.clicks_since_start+=1;
-											if(c.state) {
-												c.state = !c.state;
-												if(this.logging) {
-													this.writelogline(c.ID, "Checkbox", "(mousehandler)unchecked");
+											if(w.mouse_pressed_down_over) {
+												Checkbox c = (Checkbox)w;
+												c.clicks_since_start+=1;
+												if(c.state) {
+													c.state = !c.state;
+													if(this.logging) {
+														this.writelogline(c.ID, "Checkbox", "(mousehandler)unchecked");
+													}
+													if(c.ou != null) {
+														this.REF.method(c.ou);
+													}
 												}
-												if(c.ou != null) {
-													this.REF.method(c.ou);
-												}
-											}
-											else {
-												c.state = !c.state;
-												if(this.logging) {
-													this.writelogline(c.ID, "Checkbox", "(mousehandler)checked");
-												}
-												if(c.oc != null) {
-													this.REF.method(c.oc);
+												else {
+													c.state = !c.state;
+													if(this.logging) {
+														this.writelogline(c.ID, "Checkbox", "(mousehandler)checked");
+													}
+													if(c.oc != null) {
+														this.REF.method(c.oc);
+													}
 												}
 											}
 										}
 										else if(w instanceof Inputfield) {
-											Inputfield i = (Inputfield)w;
-											i.clicks_since_start++;
-											if(this.logging) {
-												this.writelogline(i.ID, "Inputfield", "(mousehandler)input activated");
+											if(w.mouse_pressed_down_over) {
+												Inputfield i = (Inputfield)w;
+												i.clicks_since_start++;
+												if(this.logging) {
+													this.writelogline(i.ID, "Inputfield", "(mousehandler)input activated");
+												}
+												i.input = true;
 											}
-											i.input = true;
 										}
 									}
+									w.mouse_pressed_down_over = false;
 								}
 							}
 							else {
@@ -3512,6 +2699,9 @@ public class BeastyWorld
 										}
 										i.input = false;
 									}
+								}
+								if(w.active) {
+									w.mouse_pressed_down_over = false;
 								}
 							}
 						}
@@ -3530,135 +2720,154 @@ public class BeastyWorld
 									//left button
 									if(e.getButton() == PConstants.LEFT) {	
 										if(w instanceof Button) {
-											Button b = (Button)w;
-											b.clicks_since_start+=1;
-											if(this.logging) {
-												this.writelogline(b.ID, "Button", "(mousehandler)left clicked");
-											}
-											if(b.olc != null) {
-												this.REF.method(b.olc);
-												//PApplet.println("Surface one");
+											if(w.mouse_pressed_down_over) {
+												Button b = (Button)w;
+												b.clicks_since_start+=1;
+												if(this.logging) {
+													this.writelogline(b.ID, "Button", "(mousehandler)left clicked");
+												}
+												if(b.olc != null) {
+													this.REF.method(b.olc);
+													//PApplet.println("Surface one");
+												}
 											}
 										}
 										else if(w instanceof Checkbox) {
-											Checkbox c = (Checkbox)w;
-											c.clicks_since_start+=1;
-											if(c.state) {
-												c.state = !c.state;
-												if(this.logging) {
-													this.writelogline(c.ID, "Checkbox", "(mousehandler)unchecked");
+											if(w.mouse_pressed_down_over) {
+												Checkbox c = (Checkbox)w;
+												c.clicks_since_start+=1;
+												if(c.state) {
+													c.state = !c.state;
+													if(this.logging) {
+														this.writelogline(c.ID, "Checkbox", "(mousehandler)unchecked");
+													}
+													if(c.ou != null) {
+														this.REF.method(c.ou);
+													}
 												}
-												if(c.ou != null) {
-													this.REF.method(c.ou);
-												}
-											}
-											else {
-												c.state = !c.state;
-												if(this.logging) {
-													this.writelogline(c.ID, "Checkbox", "(mousehandler)checked");
-												}
-												if(c.oc != null) {
-													this.REF.method(c.oc);
+												else {
+													c.state = !c.state;
+													if(this.logging) {
+														this.writelogline(c.ID, "Checkbox", "(mousehandler)checked");
+													}
+													if(c.oc != null) {
+														this.REF.method(c.oc);
+													}
 												}
 											}
 										}
 										else if(w instanceof Inputfield) {
-											Inputfield i = (Inputfield)w;
-											i.clicks_since_start++;
-											if(this.logging) {
-												this.writelogline(i.ID, "Inputfield", "(mousehandler)input activated");
+											if(w.mouse_pressed_down_over) {
+												Inputfield i = (Inputfield)w;
+												i.clicks_since_start++;
+												if(this.logging) {
+													this.writelogline(i.ID, "Inputfield", "(mousehandler)input activated");
+												}
+												i.input = true;
 											}
-											i.input = true;
 										}
 									}
 									
 									//middle button
 									else if(e.getButton() == PConstants.CENTER) {
 										if(w instanceof Button) {
-											Button b = (Button)w;
-											b.clicks_since_start+=1;
-											if(this.logging) {
-												this.writelogline(b.ID, "Button", "(mousehandler)middle clicked");
-											}
-											if(b.omc != null) {
-												this.REF.method(b.omc);
+											if(w.mouse_pressed_down_over) {
+												Button b = (Button)w;
+												b.clicks_since_start+=1;
+												if(this.logging) {
+													this.writelogline(b.ID, "Button", "(mousehandler)middle clicked");
+												}
+												if(b.omc != null) {
+													this.REF.method(b.omc);
+												}
 											}
 										}
 										else if(w instanceof Checkbox) {
-											Checkbox c = (Checkbox)w;
-											c.clicks_since_start+=1;
-											if(c.state) {
-												c.state = !c.state;
-												if(this.logging) {
-													this.writelogline(c.ID, "Checkbox", "(mousehandler)unchecked");
+											if(w.mouse_pressed_down_over) {
+												Checkbox c = (Checkbox)w;
+												c.clicks_since_start+=1;
+												if(c.state) {
+													c.state = !c.state;
+													if(this.logging) {
+														this.writelogline(c.ID, "Checkbox", "(mousehandler)unchecked");
+													}
+													if(c.ou != null) {
+														this.REF.method(c.ou);
+													}
 												}
-												if(c.ou != null) {
-													this.REF.method(c.ou);
+												else {
+													c.state = !c.state;
+													if(this.logging) {
+														this.writelogline(c.ID, "Checkbox", "(mousehandler)checked");
+													}
+													if(c.oc != null) {
+														this.REF.method(c.oc);
+													}
 												}
 											}
-											else {
-												c.state = !c.state;
-												if(this.logging) {
-													this.writelogline(c.ID, "Checkbox", "(mousehandler)checked");
-												}
-												if(c.oc != null) {
-													this.REF.method(c.oc);
-												}
-											}	
 										}
 										else if(w instanceof Inputfield) {
-											Inputfield i = (Inputfield)w;
-											i.clicks_since_start++;
-											if(this.logging) {
-												this.writelogline(i.ID, "Inputfield", "(mousehandler)input activated");
+											if(w.mouse_pressed_down_over) {
+												Inputfield i = (Inputfield)w;
+												i.clicks_since_start++;
+												if(this.logging) {
+													this.writelogline(i.ID, "Inputfield", "(mousehandler)input activated");
+												}
+												i.input = true;
 											}
-											i.input = true;
 										}
 									}
 									
 									//right button
 									else if(e.getButton() == PConstants.RIGHT) {
 										if(w instanceof Button) {
-											Button b = (Button)w;
-											b.clicks_since_start+=1;
-											if(this.logging) {
-												this.writelogline(b.ID, "Button", "(mousehandler)right clicked");
-											}
-											if(b.orc != null) {
-												this.REF.method(b.orc);
+											if(w.mouse_pressed_down_over) {
+												Button b = (Button)w;
+												b.clicks_since_start+=1;
+												if(this.logging) {
+													this.writelogline(b.ID, "Button", "(mousehandler)right clicked");
+												}
+												if(b.orc != null) {
+													this.REF.method(b.orc);
+												}
 											}
 										}
 										else if (w instanceof Checkbox) {
-											Checkbox c = (Checkbox)w;
-											c.clicks_since_start+=1;
-											if(c.state) {
-												c.state = !c.state;
-												if(this.logging) {
-													this.writelogline(c.ID, "Checkbox", "(mousehandler)unchecked");
+											if(w.mouse_pressed_down_over) {
+												Checkbox c = (Checkbox)w;
+												c.clicks_since_start+=1;
+												if(c.state) {
+													c.state = !c.state;
+													if(this.logging) {
+														this.writelogline(c.ID, "Checkbox", "(mousehandler)unchecked");
+													}
+													if(c.ou != null) {
+														this.REF.method(c.ou);
+													}
 												}
-												if(c.ou != null) {
-													this.REF.method(c.ou);
-												}
-											}
-											else {
-												c.state = !c.state;
-												if(this.logging) {
-													this.writelogline(c.ID, "Checkbox", "(mousehandler)checked");
-												}
-												if(c.oc != null) {
-													this.REF.method(c.oc);
+												else {
+													c.state = !c.state;
+													if(this.logging) {
+														this.writelogline(c.ID, "Checkbox", "(mousehandler)checked");
+													}
+													if(c.oc != null) {
+														this.REF.method(c.oc);
+													}
 												}
 											}
 										}
 										else if(w instanceof Inputfield) {
-											Inputfield i = (Inputfield)w;
-											i.clicks_since_start++;
-											if(this.logging) {
-												this.writelogline(i.ID, "Inputfield", "(mousehandler)input activated");
+											if(w.mouse_pressed_down_over) {
+												Inputfield i = (Inputfield)w;
+												i.clicks_since_start++;
+												if(this.logging) {
+													this.writelogline(i.ID, "Inputfield", "(mousehandler)input activated");
+												}
+												i.input = true;
 											}
-											i.input = true;
 										}
 									}
+									w.mouse_pressed_down_over = false;
 								}
 							}
 							else {
@@ -3671,6 +2880,7 @@ public class BeastyWorld
 											}
 										}
 										i.input = false;
+										w.mouse_pressed_down_over = false;
 									}
 								}
 							}

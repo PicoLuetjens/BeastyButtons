@@ -21,6 +21,20 @@
     <backgrounddisable>false</backgrounddisable>
     <backgroundcolor>-3355444</backgroundcolor>
     <windowtitle>default</windowtitle>
+    <printouts>
+	<printout>Surface1 id: surface1</printout>
+	<printout>Surface2 id: surface2</printout>
+	<printout>Surface1 Button1 id: surface1button1</printout>
+	<printout>Surface1 Button2 id: surface1button2</printout>
+	<printout>Surface1 Button3 id: surface1button3</printout>
+	<printout>Surface1 Button4 id: surface1button4</printout>
+	<printout>Surface1 Button5 id: surface1button5</printout>
+	<printout>Surface2 Button1 id: surface2button1</printout>
+	<printout>Surface2 Button2 id: surface2button2</printout>
+	<printout>Surface2 Button3 id: surface2button3</printout>
+	<printout>Surface2 Button4 id: surface2button4</printout>
+	<printout>Surface2 Button5 id: surface2button5</printout>
+    </printouts>
     <dependencies>
       <iconpath>default</iconpath>
     </dependencies>

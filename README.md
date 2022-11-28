@@ -1,6 +1,6 @@
 # BeastyButtons Project
 
-<p align="center"><img src="Readme-Files/BeastybuttonsLogo.svg"></img></p>
+<p align="center"><img src="Readme-Files/BeastyButtons Logo.svg"></img></p>
 This is the repository of the BeastyButtons Library for the Java Version of [Processing]("https://processing.org/").
 This project is developed under the same license as the [official processing repository](https://github.com/processing/processing4).
 
@@ -34,20 +34,17 @@ That includes setting costum images as well as using import/export and using the
 # Known Bugs
 - tabswitch handler currently does not work
 - importing files throws an error
-- BB_Image copySettings() has some weird behaviour with image crops, for now crops have to be set manually
+- BB_Image copySettings() has some weird behaviour with image crops, for now crops have to be set individually
 
 # Future Features (next Version update)
 - rewritten fixed import and export system
 - virtual keyboard for inputfields with the mousehandler
 - individual costum font rendering for each Widget
-- use HTML color codes in BeastyButtons
 
 # Future Future Features (further version update)
 - animating between surfaces with transitions like wipe and opacity transition
 - new widgets: BB_Table, Dropdownlist, Slider, Radiobutton, Coordinatesystem
 - auto scale new imports if the sketch size does not match up
 - Visual GUI Builder to build a BeastyButtons Layout without coding
-- export a Layout to a static HTML Website
-- export a Layout to ControlP5
 
 > current operating version: v1.1

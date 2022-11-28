@@ -12,7 +12,7 @@ abstract class Widget
 	protected boolean visible = true;
 	
 	//this is true when the mouse is pressed over an element(not released)
-	protected boolean trueClick = false;
+	public boolean mouse_pressed_down_over = false;
 	
 	protected String SOURCEPATH;
 	

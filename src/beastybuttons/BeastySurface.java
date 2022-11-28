@@ -52,6 +52,9 @@ public class BeastySurface
 	//the index in the tabswitchlist
 	protected int tabswitchindex = 0;
 	
+	protected String fontpath = "default";
+	
+	protected String ttfontpath = "default";
 	
 	
 	//******CONSTRUCTOR******
@@ -102,6 +105,54 @@ public class BeastySurface
 		this.offsetx = s.offsetx;
 		this.offsety = s.offsety;
 		
+		return this;
+	}
+	
+	@NoDocumentation
+	@Experimental
+	@NotImplementedYet
+	public BeastySurface setFont(String fontpath) {
+		this.fontpath = fontpath;
+		for(Widget w : this.widgets) {
+			if(w instanceof Button) {
+				Button b = (Button)w;
+				b.setFont(fontpath);
+			}
+			else if(w instanceof Label) {
+				Label l = (Label)w;
+				l.setFont(fontpath);
+			}
+			else if(w instanceof Inputfield) {
+				Inputfield i = (Inputfield)w;
+				i.setFont(fontpath);
+			}
+		}
+		return this;
+	}
+	
+	@NoDocumentation
+	@Experimental
+	@NotImplementedYet
+	public BeastySurface setTooltipFont(String fontpath) {
+		this.ttfontpath = fontpath;
+		for(Widget w : this.widgets) {
+			if(w instanceof Button) {
+				Button b = (Button)w;
+				b.setTooltipFont(fontpath);
+			}
+			else if(w instanceof Checkbox) {
+				Checkbox c = (Checkbox)w;
+				c.setTooltipFont(fontpath);
+			}
+			else if(w instanceof Inputfield) {
+				Inputfield i = (Inputfield)w;
+				i.setFont(fontpath);
+			}
+			else if(w instanceof BB_Image) {
+				BB_Image bi = (BB_Image)w;
+				bi.setTooltipFont(fontpath);
+			}
+		}
 		return this;
 	}
 	

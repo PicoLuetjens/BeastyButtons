@@ -29,6 +29,11 @@ public class Label extends Widget
   	//protected float outline = 10f;
   	
   	
+  	//rendering widget font
+  	protected PFont font;
+  	
+  	protected String fontpath = "default";
+  	
   	//******CONSTRUCTORS******
   	
 	//old Label_asot constructor
@@ -41,6 +46,7 @@ public class Label extends Widget
 		this.generateID();
 		this.rendercolor = this.background;
 		this.timeStep = System.currentTimeMillis();
+		this.font = this.REF.createFont("bahnschrift.ttf", 32);
 	}
 	
 	//old Label_asot constructor
@@ -54,6 +60,7 @@ public class Label extends Widget
 		this.generateID();
 		this.rendercolor = this.background;
 		this.timeStep = System.currentTimeMillis();
+		this.font = this.REF.createFont("bahnschrift.ttf", 32);
 	}
 	
 	//old Label_asos constructor
@@ -67,6 +74,7 @@ public class Label extends Widget
 		this.generateID();
 		this.rendercolor = this.background;
 		this.timeStep = System.currentTimeMillis();
+		this.font = this.REF.createFont("bahnschrift.ttf", 32);
 	}
 	
 	//old Label_asos contructor
@@ -81,6 +89,7 @@ public class Label extends Widget
 		this.generateID();
 		this.rendercolor = this.background;
 		this.timeStep = System.currentTimeMillis();
+		this.font = this.REF.createFont("bahnschrift.ttf", 32);
 	}
 	
 	//import constructor
@@ -206,6 +215,7 @@ public class Label extends Widget
     
     
     //******SET METHODS******
+    
     public Label copySettings(Label b) {
     	this.positions[0] = b.positions[0];
     	this.positions[1] = b.positions[1];
@@ -227,6 +237,24 @@ public class Label extends Widget
     	this.visible = b.visible;
     	
     	this.LAYER = b.LAYER;
+    	
+    	this.font = b.font;
+    	this.fontpath = b.fontpath;
+    	
+    	return this;
+    }
+    
+    @NotImplementedYet
+    @NoDocumentation
+    @Experimental
+    public Label setFont(String fontpath) {
+    	if(fontpath.endsWith(".vlw")) {
+    		this.font = this.REF.loadFont(fontpath);
+    	}
+    	else {
+    		this.font = this.REF.createFont(fontpath, 32);
+    	}
+    	this.fontpath = fontpath;
     	
     	return this;
     }

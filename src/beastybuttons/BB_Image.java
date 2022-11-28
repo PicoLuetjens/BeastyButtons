@@ -26,6 +26,11 @@ public class BB_Image extends Widget
 	// the scaled size of the image without the calculation of the crops
 	float[] scale_img_size = {0, 0};
 	
+	//rendering tooltip font
+  	protected PFont ttfont;
+  	
+  	protected String ttfontpath = "default";
+	
 	
 	//******CONSTRUCTORS******
 	
@@ -39,6 +44,7 @@ public class BB_Image extends Widget
 		this.generateID();
 		this.scale_img_size[0] = this.sizes[0];
 		this.scale_img_size[1] = this.sizes[1];
+		this.ttfont = this.REF.createFont("bahnschrift.ttf", 32);
 	}
 	
 	//import constructor
@@ -176,6 +182,9 @@ public class BB_Image extends Widget
     	this.visible = b.visible;
     	
     	this.LAYER = b.LAYER;
+    	
+    	this.ttfont = b.ttfont;
+    	this.ttfontpath = b.ttfontpath;
     	
     	return this;
     }
@@ -727,6 +736,22 @@ public class BB_Image extends Widget
     //enable or disable the tooltip(tooltip is automatically enabled on creation)
     public BB_Image enableTooltip(boolean enable) {
     	this.tooltip_enabled = enable;
+    	return this;
+    }
+    
+    
+    @NotImplementedYet
+    @NoDocumentation
+    @Experimental
+    public BB_Image setTooltipFont(String fontpath) {
+    	if(fontpath.endsWith(".vlw")) {
+    		this.ttfont = this.REF.loadFont(fontpath);
+    	}
+    	else {
+    		this.ttfont = this.REF.createFont(fontpath, 32);
+    	}
+    	this.ttfontpath = fontpath;
+    	
     	return this;
     }
     

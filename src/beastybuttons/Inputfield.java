@@ -50,6 +50,19 @@ public class Inputfield extends Widget
   	
   	//the stroke width of the outline
   	protected float outline = 2f;
+  	
+  	//rendering widget font
+  	protected PFont font;
+  	
+  	//rendering tooltip font
+  	protected PFont ttfont;
+  	
+  	protected String fontpath = "default";
+  	
+  	protected String ttfontpath = "default";
+  	
+  	//holds the linked vk
+  	protected VirtualKeyboard keyboard = null;
 	
 	//******CONSTRUCTORS******
 	
@@ -67,6 +80,8 @@ public class Inputfield extends Widget
 		this.generateID();
 		this.rendercolor = this.background;
 		this.timeStep = System.currentTimeMillis();
+		this.font = this.REF.createFont("bahnschrift.ttf", 32);
+		this.ttfont = this.REF.createFont("bahnschrift.ttf", 32);
 	}
 	
 	//old Inputfield_asot constructor
@@ -84,6 +99,8 @@ public class Inputfield extends Widget
 		this.generateID();
 		this.rendercolor = this.background;
 		this.timeStep = System.currentTimeMillis();
+		this.font = this.REF.createFont("bahnschrift.ttf", 32);
+		this.ttfont = this.REF.createFont("bahnschrift.ttf", 32);
 	}
 	
 	//old Inputfield_asos constructor
@@ -101,6 +118,8 @@ public class Inputfield extends Widget
 		this.generateID();
 		this.rendercolor = this.background;
 		this.timeStep = System.currentTimeMillis();
+		this.font = this.REF.createFont("bahnschrift.ttf", 32);
+		this.ttfont = this.REF.createFont("bahnschrift.ttf", 32);
 	}
 	
 	//old Inputfield_asos constructor
@@ -119,6 +138,8 @@ public class Inputfield extends Widget
 		this.generateID();
 		this.rendercolor = this.background;
 		this.timeStep = System.currentTimeMillis();
+		this.font = this.REF.createFont("bahnschrift.ttf", 32);
+		this.ttfont = this.REF.createFont("bahnschrift.ttf", 32);
 	}
 	
 	//import constructor
@@ -358,8 +379,30 @@ public class Inputfield extends Widget
     	
     	this.outline = b.outline;
     	
+    	this.font = b.font;
+    	this.fontpath = b.fontpath;
+    	
+    	this.ttfont = b.ttfont;
+    	this.ttfontpath = b.ttfontpath;
+    	
     	return this;
     }
+    
+    @NotImplementedYet
+    @NoDocumentation
+    @Experimental
+    public Inputfield setFont(String fontpath) {
+    	if(fontpath.endsWith(".vlw")) {
+    		this.font = this.REF.loadFont(fontpath);
+    	}
+    	else {
+    		this.font = this.REF.createFont(fontpath, 32);
+    	}
+    	this.fontpath = fontpath;
+    	
+    	return this;
+    }
+    
     
     public Inputfield setOutlineWidth(float o_width) {
     	this.outline = o_width;
@@ -751,6 +794,23 @@ public class Inputfield extends Widget
     	this.tooltip_enabled = enable;
     	return this;
     }
+    
+    
+    @NotImplementedYet
+    @NoDocumentation
+    @Experimental
+    public Inputfield setTooltipFont(String fontpath) {
+    	if(fontpath.endsWith(".vlw")) {
+    		this.ttfont = this.REF.loadFont(fontpath);
+    	}
+    	else {
+    		this.ttfont = this.REF.createFont(fontpath, 32);
+    	}
+    	this.ttfontpath = fontpath;
+    	
+    	return this;
+    }
+    
     
     //positions the tooltip automatically
     @Override

@@ -33,6 +33,16 @@ public class Button extends Widget
   	//the stroke width of the outline
   	protected float outline = 2f;
   	
+  	//rendering widget font
+  	protected PFont font;
+  	
+  	//rendering tooltip font
+  	protected PFont ttfont;
+  	
+  	protected String fontpath = "default";
+  	
+  	protected String ttfontpath = "default";
+  	
   	
   	//******CONSTRUCTORS******
 	
@@ -46,6 +56,8 @@ public class Button extends Widget
 		this.generateID();
 		this.rendercolor = this.background;
 		this.timeStep = System.currentTimeMillis();
+		this.font = this.REF.createFont("bahnschrift.ttf", 32);
+		this.ttfont = this.REF.createFont("bahnschrift.ttf", 32);
 		//this.line_separator = System.getProperty("line.separator");
 	}
 	
@@ -60,6 +72,8 @@ public class Button extends Widget
 		this.generateID();
 		this.rendercolor = this.background;
 		this.timeStep = System.currentTimeMillis();
+		this.font = this.REF.createFont("bahnschrift.ttf", 32);
+		this.ttfont = this.REF.createFont("bahnschrift.ttf", 32);
 		//this.line_separator = System.getProperty("line.separator");
 	}
 	
@@ -74,6 +88,8 @@ public class Button extends Widget
 		this.generateID();
 		this.rendercolor = this.background;
 		this.timeStep = System.currentTimeMillis();
+		this.font = this.REF.createFont("bahnschrift.ttf", 32);
+		this.ttfont = this.REF.createFont("bahnschrift.ttf", 32);
 		//this.line_separator = System.getProperty("line.separator");
 	}
 	
@@ -89,6 +105,8 @@ public class Button extends Widget
 		this.generateID();
 		this.rendercolor = this.background;
 		this.timeStep = System.currentTimeMillis();
+		this.font = this.REF.createFont("bahnschrift.ttf", 32);
+		this.ttfont = this.REF.createFont("bahnschrift.ttf", 32);
 		//this.line_separator = System.getProperty("line.separator");
 	}
 	
@@ -331,9 +349,30 @@ public class Button extends Widget
     	this.orc = b.orc;
     	
     	this.outline = b.outline;
+    	this.font = b.font;
+    	this.ttfont = b.ttfont;
     	
     	return this;
     }
+    
+    
+    // have to include fonts in the copysettings and in the import and export files as dependency!!!
+    
+    @NotImplementedYet
+    @NoDocumentation
+    @Experimental
+    public Button setFont(String fontpath) {
+    	if(fontpath.endsWith(".vlw")) {
+    		this.font = this.REF.loadFont(fontpath);
+    	}
+    	else {
+    		this.font = this.REF.createFont(fontpath, 32);
+    	}
+    	this.fontpath = fontpath;
+    	
+    	return this;
+    }
+    
     
     public Button setOutlineWidth(float o_width) {
     	this.outline = o_width;
@@ -693,6 +732,23 @@ public class Button extends Widget
     	return this;
     }
     
+    
+    @NotImplementedYet
+    @NoDocumentation
+    @Experimental
+    public Button setTooltipFont(String fontpath) {
+    	if(fontpath.endsWith(".vlw")) {
+    		this.ttfont = this.REF.loadFont(fontpath);
+    	}
+    	else {
+    		this.ttfont = this.REF.createFont(fontpath, 32);
+    	}
+    	this.ttfontpath = fontpath;
+    	
+    	return this;
+    }
+    
+    
     //positions the tooltip automatically
     @Override
     protected void calc_tt_auto_pos()
@@ -763,6 +819,8 @@ public class Button extends Widget
     	this.REF.fill(this.foreground);
     	//this.REF.fill(this.rendercolor);
     	
+    	this.REF.textFont(this.font);
+    	
     	this.REF.noStroke();
     
     	if(this.visible) {
@@ -798,6 +856,7 @@ public class Button extends Widget
     	//no transition animation is happening
     	if(!BeastyWorld.ISANIMATING) {
     		
+    		this.REF.textFont(this.ttfont);
     		
     		if(this.active) {
     			this.REF.rectMode(PConstants.CENTER);
