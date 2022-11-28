@@ -39,7 +39,6 @@ That includes setting costum images as well as using import/export and using the
 # Future Features (next Version update)
 - rewritten fixed import and export system
 - virtual keyboard for inputfields with the mousehandler
-- individual costum font rendering for each Widget
 
 # Future Future Features (further version update)
 - animating between surfaces with transitions like wipe and opacity transition
@@ -47,4 +46,4 @@ That includes setting costum images as well as using import/export and using the
 - auto scale new imports if the sketch size does not match up
 - Visual GUI Builder to build a BeastyButtons Layout without coding
 
-> current operating version: v1.1
+> current operating version: v1.4
